@@ -15,6 +15,7 @@ namespace AngryBirds
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            // Nakul Says Hi!!!
         }
 
         protected override void Initialize()
