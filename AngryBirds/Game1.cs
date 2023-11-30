@@ -16,6 +16,8 @@ namespace AngryBirds
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             // Nakul Says Hi!!!
+
+            // Samuel
         }
 
         protected override void Initialize()
