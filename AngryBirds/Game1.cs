@@ -9,6 +9,7 @@ namespace AngryBirds
         private GraphicsDeviceManager _graphics;
         public SpriteBatch _spriteBatch;
         private StartScene startScene;
+        private AboutScene aboutScene;
 
         public Game1()
         {
@@ -38,17 +39,52 @@ namespace AngryBirds
             this.Components.Add(startScene);
             startScene.show();
 
+
+            aboutScene = new AboutScene(this);
+            this.Components.Add(aboutScene);
+            
+
+
+        }
+        private void hideAllScenes()
+        {
+            foreach (GameComponent item in Components)
+            {
+                if (item is GameScene)
+                {
+                    GameScene gs = (GameScene)item;
+                    gs.hide();
+                }
+            }
         }
 
         protected override void Update(GameTime gameTime)
         {
             // TODO: Add your update logic here
 
-            //To make escape exit full screen
+            int selectedIndex = 0;
             KeyboardState ks = Keyboard.GetState();
-            if (ks.IsKeyDown(Keys.Escape))
+
+            if (startScene.Enabled)
             {
-                Exit();
+                selectedIndex = startScene.Menu.selectedIndex;
+                if (selectedIndex == 3 && ks.IsKeyDown(Keys.Enter))
+                {
+                    hideAllScenes();
+                    aboutScene.show();
+                }
+                else if (selectedIndex == 4 && ks.IsKeyDown(Keys.Enter))
+                {
+                    Exit();
+                }
+            }
+            if (aboutScene.Enabled)
+            {
+                if (ks.IsKeyDown(Keys.Escape))
+                {
+                    hideAllScenes();
+                    startScene.show();
+                }
             }
 
 

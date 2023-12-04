@@ -14,7 +14,7 @@ namespace AngryBirds
         public MenuComponent Menu { get; set; }
         private SpriteBatch sb;
         private Texture2D backgroundmenuTexture;
-        string[] menuItems = { "Start Game", "Help", "High Score", "Credits", "Quit" };
+        string[] menuItems = { "Start Game", "Help", "High Score", "About", "Quit" };
 
         public StartScene(Game game) : base(game)
         {
