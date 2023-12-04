@@ -10,6 +10,7 @@ namespace AngryBirds
         public SpriteBatch _spriteBatch;
         private StartScene startScene;
         private AboutScene aboutScene;
+        private GameScene gameScene;
 
         public Game1()
         {
@@ -42,6 +43,9 @@ namespace AngryBirds
 
             aboutScene = new AboutScene(this);
             this.Components.Add(aboutScene);
+
+            gameScene = new GameScene(this);
+            this.Components.Add(gameScene);
             
 
 
@@ -68,17 +72,30 @@ namespace AngryBirds
             if (startScene.Enabled)
             {
                 selectedIndex = startScene.Menu.selectedIndex;
-                if (selectedIndex == 3 && ks.IsKeyDown(Keys.Enter))
+                if (selectedIndex == 0 && ks.IsKeyDown(Keys.Enter))
+                {
+                    hideAllScenes();
+                    gameScene.show();
+                }
+                else if (selectedIndex == 3 && ks.IsKeyDown(Keys.Enter))
                 {
                     hideAllScenes();
                     aboutScene.show();
-                }
+                } 
                 else if (selectedIndex == 4 && ks.IsKeyDown(Keys.Enter))
                 {
                     Exit();
                 }
             }
             if (aboutScene.Enabled)
+            {
+                if (ks.IsKeyDown(Keys.Escape))
+                {
+                    hideAllScenes();
+                    startScene.show();
+                }
+            }
+            if (gameScene.Enabled)
             {
                 if (ks.IsKeyDown(Keys.Escape))
                 {
