@@ -6,23 +6,25 @@ namespace AngryBirds
 {
     public class Game1 : Game
     {
-        //hello
         private GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
+        public SpriteBatch _spriteBatch;
+        private StartScene startScene;
 
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-            // Nakul Says Hi!!!
 
-            // Samuel
+            //sets to fullscreen
+            _graphics.IsFullScreen = true;
+
         }
 
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            Shared.stage = new Vector2(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
 
             base.Initialize();
         }
@@ -32,14 +34,23 @@ namespace AngryBirds
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+            startScene = new StartScene(this);
+            this.Components.Add(startScene);
+            startScene.show();
+
         }
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
             // TODO: Add your update logic here
+
+            //To make escape exit full screen
+            KeyboardState ks = Keyboard.GetState();
+            if (ks.IsKeyDown(Keys.Escape))
+            {
+                Exit();
+            }
+
 
             base.Update(gameTime);
         }
