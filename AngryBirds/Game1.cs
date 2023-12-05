@@ -21,6 +21,11 @@ namespace AngryBirds
             //sets to fullscreen
             _graphics.IsFullScreen = true;
 
+            //Window.IsBorderless = true;
+            //_graphics.PreferredBackBufferHeight = 1000;
+            //_graphics.PreferredBackBufferWidth = 1.78* _graphics.PreferredBackBufferHeight;
+
+
         }
 
         protected override void Initialize()
