@@ -1,20 +1,30 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using AngryBirds;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Xna.Framework.Graphics;
 
-namespace AngryBirds
+internal class PlayScene : GameScene
 {
-    internal class PlayScene: GameScene
+    private SpriteBatch sb;
+    private SlingShotComponent slingShot;
+
+    public PlayScene(Game game) : base(game)
     {
-
-
-        public PlayScene(Game game) : base(game)
-        {
-
-        }
+        Game1 g = (Game1)game;
+        this.sb = g._spriteBatch;
+        Texture2D slingShotTexture = Game.Content.Load<Texture2D>("Images/SlingShot");
+        slingShot = new SlingShotComponent(game, new Vector2(100, 200), slingShotTexture, 100, 150); 
+        Components.Add(slingShot);
     }
+
+    public override void Draw(GameTime gameTime)
+    {
+        sb.Begin();
+
+        slingShot.Draw(gameTime);
+
+        sb.End();
+
+        base.Draw(gameTime);
+    }
+
 }

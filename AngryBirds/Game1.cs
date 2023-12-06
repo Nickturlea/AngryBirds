@@ -10,20 +10,13 @@ namespace AngryBirds
         public SpriteBatch _spriteBatch;
         private StartScene startScene;
         private AboutScene aboutScene;
-        private GameScene gameScene;
+        private PlayScene playScene;
 
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-
-            //sets to fullscreen
-            _graphics.IsFullScreen = true;
-
-            //Window.IsBorderless = true;
-            //_graphics.PreferredBackBufferHeight = 1000;
-            //_graphics.PreferredBackBufferWidth = 1.78* _graphics.PreferredBackBufferHeight;
 
 
         }
@@ -40,17 +33,19 @@ namespace AngryBirds
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+
             startScene = new StartScene(this);
             this.Components.Add(startScene);
             startScene.show();
 
-
             aboutScene = new AboutScene(this);
             this.Components.Add(aboutScene);
 
-            gameScene = new GameScene(this);
-            this.Components.Add(gameScene);
+            playScene = new PlayScene(this);
+            this.Components.Add(playScene);
+
+
+   
             
 
 
@@ -80,7 +75,7 @@ namespace AngryBirds
                 if (selectedIndex == 0 && ks.IsKeyDown(Keys.Enter))
                 {
                     hideAllScenes();
-                    gameScene.show();
+                    playScene.show();
                 }
                 else if (selectedIndex == 3 && ks.IsKeyDown(Keys.Enter))
                 {
@@ -100,7 +95,7 @@ namespace AngryBirds
                     startScene.show();
                 }
             }
-            if (gameScene.Enabled)
+            if (playScene.Enabled)
             {
                 if (ks.IsKeyDown(Keys.Escape))
                 {

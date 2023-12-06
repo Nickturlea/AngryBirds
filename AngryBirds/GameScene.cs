@@ -18,7 +18,7 @@ namespace AngryBirds
             this.Visible = true;
         }
 
-        public virtual void hide() // hide scene
+        public virtual void hide() 
         {
             this.Enabled = false;
             this.Visible = false;
@@ -27,7 +27,7 @@ namespace AngryBirds
         public GameScene(Game game) : base(game)
         {
             components = new List<GameComponent>();
-            hide(); // when creating the scene hide the scene initially
+            hide(); 
         }
 
 

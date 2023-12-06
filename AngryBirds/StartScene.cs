@@ -21,7 +21,6 @@ namespace AngryBirds
             Game1 g = (Game1)game;
             this.sb = g._spriteBatch;
 
-            //g.Content can work too instead of game
             backgroundmenuTexture = game.Content.Load<Texture2D>("images/MadBirdsMenu");
             SpriteFont mainFont = game.Content.Load<SpriteFont>("fonts/MainFont");
             SpriteFont menuFont = game.Content.Load<SpriteFont>("fonts/MenuFont");
