@@ -18,12 +18,14 @@ namespace AngryBirds
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
-
+            _graphics.PreferredBackBufferWidth = 1500; 
+            _graphics.PreferredBackBufferHeight = 800;
         }
 
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+
             Shared.stage = new Vector2(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
 
             base.Initialize();
