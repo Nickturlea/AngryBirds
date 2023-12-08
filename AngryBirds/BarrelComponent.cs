@@ -30,5 +30,11 @@ namespace AngryBirds
 
             base.Draw(gameTime);
         }
+
+        public Rectangle GetBounds()
+        {
+            return new Rectangle((int)position.X, (int)position.Y, imageWidth, imageHeight);
+        }
+
     }
 }

@@ -15,8 +15,9 @@ namespace AngryBirds
         private int imageHeight;
         private MouseState previousMouseState;
         private float speed = 3f;
+        private AimShotComponent aimShot;
 
-        public BirdComponent(Game game, Vector2 initialPosition, Texture2D birdTexture, int width, int height)
+        public BirdComponent(Game game, Vector2 initialPosition, Texture2D birdTexture, int width, int height, AimShotComponent aimShot)
             : base(game)
         {
             this.spriteBatch = new SpriteBatch(game.GraphicsDevice);
@@ -26,6 +27,7 @@ namespace AngryBirds
             this.birdTexture = birdTexture;
             this.imageWidth = width;
             this.imageHeight = height;
+            this.aimShot = aimShot;
         }
 
         public override void Update(GameTime gameTime)
@@ -34,26 +36,24 @@ namespace AngryBirds
 
             if (mouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
             {
-                targetPosition = new Vector2(mouseState.X, mouseState.Y);
-                velocity = Vector2.Normalize(targetPosition - position) * speed;
-            }
+                Rectangle aimShotBounds = new Rectangle(
+                    (int)aimShot.positionAimshot.X,
+                    (int)aimShot.positionAimshot.Y,
+                    aimShot.imageWidthAimshot,
+                    aimShot.imageHeightAimshot);
 
-
-            if (Vector2.Distance(position, targetPosition) > speed)
-            {
-                position += velocity;
+                if (aimShotBounds.Contains(mouseState.X, mouseState.Y))
+                {
+                    targetPosition = new Vector2(mouseState.X, mouseState.Y);
+                    velocity = Vector2.Normalize(targetPosition - position) * speed;
+                }
             }
-            else
-            {
-                position = targetPosition;
-                velocity = Vector2.Zero;
-            }
+            position += velocity;
 
             previousMouseState = mouseState;
 
             base.Update(gameTime);
         }
-
 
 
         public override void Draw(GameTime gameTime)
@@ -70,5 +70,13 @@ namespace AngryBirds
             base.Draw(gameTime);
         }
 
+        public Rectangle GetBounds()
+        {
+            return new Rectangle(
+                (int)(position.X - imageWidth / 2),
+                (int)(position.Y - imageHeight / 2),
+                imageWidth,
+                imageHeight);
+        }
     }
 }
