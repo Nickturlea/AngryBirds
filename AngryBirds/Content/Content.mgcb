@@ -111,6 +111,18 @@
 /processorParam:TextureFormat=Color
 /build:Images/SlingShot.png
 
+#begin Images/SpeedOfBird.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/SpeedOfBird.png
+
 #begin Images/startLevelBackground.png
 /importer:TextureImporter
 /processor:TextureProcessor

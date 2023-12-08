@@ -27,9 +27,13 @@ internal class PlayScene : GameScene
         Texture2D barrelTexture = Game.Content.Load<Texture2D>("Images/barrel");
         Texture2D pigTexure= Game.Content.Load<Texture2D>("Images/pig");
         Texture2D yellowBirdTexure = Game.Content.Load<Texture2D>("Images/yellowBird");
+        Texture2D powerBarSheet = Game.Content.Load<Texture2D>("Images/SpeedOfBird");
 
 
 
+
+        // Initialize the SpeedBarComponent
+        Vector2 powerBarPosition = new Vector2(100, 100); // Set this position to where you want the power bar on the screen
 
         // Initializes instances 
         Vector2 slingShotPosition = new Vector2(100, 220);
