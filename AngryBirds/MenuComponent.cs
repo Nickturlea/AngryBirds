@@ -71,8 +71,9 @@ namespace AngryBirds
             sb.Begin();
 
 
-            int screenWidth = GraphicsDevice.Viewport.Width;
-            int screenHeight = GraphicsDevice.Viewport.Height;
+            int screenWidth = (int)Shared.stage.X;
+            int screenHeight = (int)Shared.stage.Y;
+
             sb.Draw(backgroundmenuTexture, new Rectangle(0, 0, screenWidth, screenHeight), Color.White);
 
 
