@@ -1,90 +1,110 @@
-﻿using Microsoft.Xna.Framework;
+﻿using AngryBirds;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework;
 
-namespace AngryBirds
+internal class BirdComponent : DrawableGameComponent
 {
-    internal class BirdComponent : DrawableGameComponent
+    private SpriteBatch spriteBatch;
+    private Texture2D birdTexture;
+    private Vector2 position;
+    private Vector2 targetPosition;
+    private Vector2 velocity;
+    private int imageWidth;
+    private int imageHeight;
+    private MouseState previousMouseState;
+    private AimShotComponent aimShot;
+    private ProgressBarComponent progressBar;
+    private SpriteFont font; // New property for the font
+    private bool mouseClickedAtZeroProgress;
+
+    public BirdComponent(Game game, Vector2 initialPosition, Texture2D birdTexture, int width, int height, AimShotComponent aimShot, ProgressBarComponent progressBar, SpriteFont font) // Added SpriteFont parameter
+        : base(game)
     {
-        private SpriteBatch spriteBatch;
-        private Texture2D birdTexture;
-        private Vector2 position;
-        private Vector2 targetPosition;
-        private Vector2 velocity;
-        private int imageWidth;
-        private int imageHeight;
-        private MouseState previousMouseState;
-        private AimShotComponent aimShot;
-        private ProgressBarComponent progressBar; 
+        this.spriteBatch = new SpriteBatch(game.GraphicsDevice);
+        this.position = initialPosition;
+        this.targetPosition = initialPosition;
+        this.velocity = Vector2.Zero;
+        this.birdTexture = birdTexture;
+        this.imageWidth = width;
+        this.imageHeight = height;
+        this.aimShot = aimShot;
+        this.progressBar = progressBar;
+        this.font = font; // Set the font
+        this.mouseClickedAtZeroProgress = false;
+    }
 
+    public override void Update(GameTime gameTime)
+    {
+        MouseState mouseState = Mouse.GetState();
 
-
-
-        public BirdComponent(Game game, Vector2 initialPosition, Texture2D birdTexture, int width, int height, AimShotComponent aimShot, ProgressBarComponent progressBar) // Added ProgressBarComponent parameter
-            : base(game)
+        if (mouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
         {
-            this.spriteBatch = new SpriteBatch(game.GraphicsDevice);
-            this.position = initialPosition;
-            this.targetPosition = initialPosition;
-            this.velocity = Vector2.Zero;
-            this.birdTexture = birdTexture;
-            this.imageWidth = width;
-            this.imageHeight = height;
-            this.aimShot = aimShot;
-            this.progressBar = progressBar; 
-        }
+            Rectangle aimShotBounds = new Rectangle(
+                (int)aimShot.positionAimshot.X,
+                (int)aimShot.positionAimshot.Y,
+                aimShot.imageWidthAimshot,
+                aimShot.imageHeightAimshot);
 
-        public override void Update(GameTime gameTime)
-        {
-            MouseState mouseState = Mouse.GetState();
-
-            if (mouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
+            if (aimShotBounds.Contains(mouseState.X, mouseState.Y))
             {
-                Rectangle aimShotBounds = new Rectangle(
-                    (int)aimShot.positionAimshot.X,
-                    (int)aimShot.positionAimshot.Y,
-                    aimShot.imageWidthAimshot,
-                    aimShot.imageHeightAimshot);
+                float progress = progressBar.Progress;
 
-                if (aimShotBounds.Contains(mouseState.X, mouseState.Y))
+                if (progress > 0.0f)
                 {
-                    float progress = progressBar.Progress;
-                    float speed = 3f + 10f * progress; 
-
+                    float speed = 3f + 10f * progress;
                     targetPosition = new Vector2(mouseState.X, mouseState.Y);
-                    velocity = progress > 0.0f ? Vector2.Normalize(targetPosition - position) * speed : Vector2.Zero;
+                    velocity = Vector2.Normalize(targetPosition - position) * speed;
+                    mouseClickedAtZeroProgress = false; // Reset the flag if progress is greater than 0
+                }
+                else
+                {
+                    // Set the flag if the progress is 0
+                    mouseClickedAtZeroProgress = true;
                 }
             }
-
-            position += velocity;
-
-            previousMouseState = mouseState;
-
-            base.Update(gameTime);
         }
 
-        public override void Draw(GameTime gameTime)
+        position += velocity;
+
+        previousMouseState = mouseState;
+
+        base.Update(gameTime);
+    }
+
+    public override void Draw(GameTime gameTime)
+    {
+        spriteBatch.Begin();
+
+        Rectangle sourceRectangle = new Rectangle(0, 0, 125, 125);
+        Vector2 drawPosition = new Vector2(position.X - imageWidth / 2, position.Y - imageHeight / 2);
+
+        spriteBatch.Draw(birdTexture, new Rectangle((int)drawPosition.X, (int)drawPosition.Y, imageWidth, imageHeight), sourceRectangle, Color.White);
+
+        // Draw the font only when the progress bar is at 0 and the mouse was clicked
+        if (progressBar.Progress == 0.0f && mouseClickedAtZeroProgress)
         {
-            spriteBatch.Begin();
-
-            Rectangle sourceRectangle = new Rectangle(0, 0, 125, 125);
-            Vector2 drawPosition = new Vector2(position.X - imageWidth / 2, position.Y - imageHeight / 2);
-
-            spriteBatch.Draw(birdTexture, new Rectangle((int)drawPosition.X, (int)drawPosition.Y, imageWidth, imageHeight), sourceRectangle, Color.White);
-
-            spriteBatch.End();
-
-            base.Draw(gameTime);
+            spriteBatch.DrawString(font, "Please Use The SpaceBar To Select A Speed First Then Click", new Vector2(5, 5), Color.Red); // Replace "Your Text Here" with the desired text and adjust the position
         }
 
-
-        public Rectangle GetBounds()
+        // Reset the flag when progress is greater than 0
+        if (progressBar.Progress > 0.0f)
         {
-            return new Rectangle(
-                (int)(position.X - imageWidth / 2),
-                (int)(position.Y - imageHeight / 2),
-                imageWidth,
-                imageHeight);
+            mouseClickedAtZeroProgress = false;
         }
+
+        spriteBatch.End();
+
+        base.Draw(gameTime);
+    }
+
+
+    public Rectangle GetBounds()
+    {
+        return new Rectangle(
+            (int)(position.X - imageWidth / 2),
+            (int)(position.Y - imageHeight / 2),
+            imageWidth,
+            imageHeight);
     }
 }
