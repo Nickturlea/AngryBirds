@@ -10,11 +10,11 @@ namespace AngryBirds
         private Texture2D birdTexture;
         private Vector2 position;
         private Vector2 targetPosition;
+
         private Vector2 velocity;
         private int imageWidth;
         private int imageHeight;
         private MouseState previousMouseState;
-        private float speed = 3f;
         private AimShotComponent aimShot;
 
         public BirdComponent(Game game, Vector2 initialPosition, Texture2D birdTexture, int width, int height, AimShotComponent aimShot)
@@ -30,30 +30,34 @@ namespace AngryBirds
             this.aimShot = aimShot;
         }
 
+        public bool CanLaunch { get; set; } // Flag to control launch
+
+
+        public void Launch(float power)
+        {
+            if (CanLaunch)
+            {
+                // Use the power value to determine the launch velocity
+                velocity = new Vector2(power * 7, 0); // 7 is just an example multiplier
+                CanLaunch = false; // Reset the flag after launch
+            }
+        }
+
+
         public override void Update(GameTime gameTime)
         {
             MouseState mouseState = Mouse.GetState();
 
-            if (mouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
+            if (CanLaunch)
             {
-                Rectangle aimShotBounds = new Rectangle(
-                    (int)aimShot.positionAimshot.X,
-                    (int)aimShot.positionAimshot.Y,
-                    aimShot.imageWidthAimshot,
-                    aimShot.imageHeightAimshot);
-
-                if (aimShotBounds.Contains(mouseState.X, mouseState.Y))
-                {
-                    targetPosition = new Vector2(mouseState.X, mouseState.Y);
-                    velocity = Vector2.Normalize(targetPosition - position) * speed;
-                }
+                position += velocity;
             }
-            position += velocity;
 
             previousMouseState = mouseState;
 
             base.Update(gameTime);
         }
+
 
 
         public override void Draw(GameTime gameTime)

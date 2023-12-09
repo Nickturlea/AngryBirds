@@ -1,6 +1,7 @@
 ﻿using AngryBirds;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Linq;
 
@@ -8,13 +9,21 @@ internal class PlayScene : GameScene
 {
     private SpriteBatch sb;
     private Texture2D currBackGround;
+    private Texture2D birdAimShotTexture; 
     private SlingShotComponent slingShot;
     private BirdComponent bird;
     private BoxComponent brownBox;
     private BarrelComponent barrel;
+    private ProgressBarComponent progressBar;
     private PigComponent pig;
+    private bool shouldDrawBirdAimShot = false;
+    // Position where the "X" should be drawn
+    private Vector2 xPosition;
+    private birdAimShot birdAimShot;
     private YellowBirdComponent yellowBird;
     private AimShotComponent aimShot;
+    private MouseState previousMouseState;
+    private KeyboardState previousKeyboardState;
     private Random random = new Random();
 
     private Vector2 GenerateRandomPosition(int width, int height)
@@ -72,12 +81,7 @@ internal class PlayScene : GameScene
         }
     }
 
-    public override void Update(GameTime gameTime)
-    {
-        CheckCollisions();
 
-        base.Update(gameTime);
-    }
 
 
     public PlayScene(Game game) : base(game)
@@ -94,11 +98,12 @@ internal class PlayScene : GameScene
         Texture2D pigTexure= Game.Content.Load<Texture2D>("Images/pig");
         Texture2D yellowBirdTexure = Game.Content.Load<Texture2D>("Images/yellowBird");
         Texture2D aimshotTex = Game.Content.Load<Texture2D>("Images/aimShot");
+        birdAimShotTexture = Game.Content.Load<Texture2D>("Images/birdAimShot");
 
 
 
         Vector2 aimShotPosition = new Vector2(200, -40);
-        aimShot = new AimShotComponent(game, aimShotPosition, aimshotTex, 200, 500);
+        aimShot = new AimShotComponent(game, aimShotPosition, aimshotTex, birdAimShotTexture, 200, 500);
 
         // Initializes instances 
         Vector2 slingShotPosition = new Vector2(100, 220);
@@ -151,7 +156,16 @@ internal class PlayScene : GameScene
         Vector2 yellowBPosition2 = GenerateRandomPosition((int)yellowSize.X, (int)yellowSize.Y);
         YellowBirdComponent yellowBird2 = new YellowBirdComponent(game, yellowBPosition2, yellowBirdTexure, (int)yellowSize.X, (int)yellowSize.Y);
 
+        // Initialize the ProgressBarComponent
+        Vector2 progressBarPosition = new Vector2(birdPosition.X - 150, birdPosition.Y - 110); // Above the bird
+        progressBar = new ProgressBarComponent(game, progressBarPosition, 200, 20);
 
+        //Vector2 birdAimShotBarPosition = new Vector2(birdPosition.X - 150, birdPosition.Y - 110); // Above the bird
+        //birdAimShot = new birdAimShot(game, birdAimShotBarPosition, birdAimShotTex, 200, 20);
+
+
+        Components.Add(progressBar); // Add the progress bar to the game's 
+        Components.Add(birdAimShot);
         Components.Add(yellowBird);
         Components.Add(pig);
         Components.Add(aimShot);
@@ -168,19 +182,78 @@ internal class PlayScene : GameScene
 
     }
 
+
+    public override void Update(GameTime gameTime)
+    {
+        CheckCollisions();
+
+        MouseState currentMouseState = Mouse.GetState();
+        KeyboardState currentKeyboardState = Keyboard.GetState();
+
+        // Click detection within the AimShotComponent's bounds
+        if (currentMouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
+        {
+            Rectangle aimShotBounds = new Rectangle(
+                (int)aimShot.PositionAimshot.X,
+                (int)aimShot.PositionAimshot.Y,
+                aimShot.ImageWidthAimshot,
+                aimShot.ImageHeightAimshot);
+
+            // Check if the click is within the bounds of the AimShotComponent
+            if (aimShotBounds.Contains(currentMouseState.X, currentMouseState.Y))
+            {
+                shouldDrawBirdAimShot = true;
+                xPosition = new Vector2(currentMouseState.X - birdAimShotTexture.Width / 2, currentMouseState.Y - birdAimShotTexture.Height / 2); // Adjust position for drawing "X"
+            }
+            else
+            {
+                shouldDrawBirdAimShot = false;
+            }
+        }
+
+        // If the AimShotComponent has been selected, check for the space bar being held down to charge
+        if (shouldDrawBirdAimShot && currentKeyboardState.IsKeyDown(Keys.Space))
+        {
+            progressBar.SetProgress(MathHelper.Clamp(progressBar.Progress + (float)gameTime.ElapsedGameTime.TotalSeconds / 3.0f, 0f, 1f));
+        }
+
+        // Launch the bird when the space bar is released after the AimShotComponent was selected
+        if (shouldDrawBirdAimShot && currentKeyboardState.IsKeyUp(Keys.Space) && previousKeyboardState.IsKeyDown(Keys.Space))
+        {
+            bird.CanLaunch = true; // Make sure this property is used in the BirdComponent to control the launch
+            bird.Launch(progressBar.Progress); // Launch the bird with the current progress as power
+            progressBar.SetProgress(0.0f); // Reset the progress bar
+            shouldDrawBirdAimShot = false; // Reset the flag
+        }
+
+        // Save the states for the next frame
+        previousMouseState = currentMouseState;
+        previousKeyboardState = currentKeyboardState;
+
+        base.Update(gameTime);
+    }
+
+
+
+
+
     public override void Draw(GameTime gameTime)
     {
         sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
-
+        // Draw the background and other components
         sb.Draw(currBackGround, new Rectangle(0, 0, (int)Shared.stage.X, (int)Shared.stage.Y), Color.White);
+        progressBar.Draw(gameTime);
         aimShot.Draw(gameTime);
         yellowBird.Draw(gameTime);
         pig.Draw(gameTime);
         barrel.Draw(gameTime);
-        slingShot.Draw(gameTime); 
+        slingShot.Draw(gameTime);
         bird.Draw(gameTime);
-
+        if (shouldDrawBirdAimShot)
+        {
+            sb.Draw(birdAimShotTexture, xPosition, null, Color.White, 0, new Vector2(birdAimShotTexture.Width / 2, birdAimShotTexture.Height / 2), 1.0f, SpriteEffects.None, 0);
+        }
         sb.End();
 
         base.Draw(gameTime);

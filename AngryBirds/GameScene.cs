@@ -31,11 +31,26 @@ namespace AngryBirds
         }
 
 
+        //public override void Update(GameTime gameTime)
+        //{
+        //    foreach (var item in components)
+        //    {
+        //        if (item.Enabled)
+        //        {
+        //            item.Update(gameTime);
+        //        }
+        //    }
+
+        //    base.Update(gameTime);
+        //}
+
         public override void Update(GameTime gameTime)
         {
+            // Check if there are any null components in the collection
             foreach (var item in components)
             {
-                if (item.Enabled)
+                // Only proceed if the item is not null and it is enabled
+                if (item != null && item.Enabled)
                 {
                     item.Update(gameTime);
                 }
@@ -43,6 +58,7 @@ namespace AngryBirds
 
             base.Update(gameTime);
         }
+
         public override void Draw(GameTime gameTime)
         {
             foreach (GameComponent item in components)
