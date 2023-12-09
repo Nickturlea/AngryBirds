@@ -8,8 +8,12 @@ namespace AngryBirds
         private SpriteBatch spriteBatch;
         private Texture2D slingShotTexture;
         private Vector2 position;
-        private int imageWidth; 
-        private int imageHeight; 
+        private int imageWidth;
+        private int imageHeight;
+
+        public Vector2 Position => position;
+        public int Width => imageWidth;
+        public int Height => imageHeight;
 
         public SlingShotComponent(Game game, Vector2 initialPosition, Texture2D slingShotTexture, int width, int height) : base(game)
         {

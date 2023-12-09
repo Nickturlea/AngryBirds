@@ -1,7 +1,7 @@
 ﻿using AngryBirds;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework;
 
 internal class BirdComponent : DrawableGameComponent
 {
@@ -15,10 +15,22 @@ internal class BirdComponent : DrawableGameComponent
     private MouseState previousMouseState;
     private AimShotComponent aimShot;
     private ProgressBarComponent progressBar;
-    private SpriteFont font; 
+    private SpriteFont font;
     private bool mouseClickedAtZeroProgress;
 
-    public BirdComponent(Game game, Vector2 initialPosition, Texture2D birdTexture, int width, int height, AimShotComponent aimShot, ProgressBarComponent progressBar, SpriteFont font) // Added SpriteFont parameter
+    private SlingShotComponent slingShot; // Added SlingShotComponent
+
+    private int respawnCount;
+    private const int MaxRespawnLimit = 2;
+
+    private int remainingBirds; // New variable to track remaining birds
+
+    public int RemainingBirds
+    {
+        get { return remainingBirds; }
+    }
+
+    public BirdComponent(Game game, Vector2 initialPosition, Texture2D birdTexture, int width, int height, AimShotComponent aimShot, ProgressBarComponent progressBar, SpriteFont font, SlingShotComponent slingShot)
         : base(game)
     {
         this.spriteBatch = new SpriteBatch(game.GraphicsDevice);
@@ -30,8 +42,11 @@ internal class BirdComponent : DrawableGameComponent
         this.imageHeight = height;
         this.aimShot = aimShot;
         this.progressBar = progressBar;
-        this.font = font; 
+        this.font = font;
         this.mouseClickedAtZeroProgress = false;
+        this.slingShot = slingShot; 
+        this.respawnCount = 0;
+        this.remainingBirds = MaxRespawnLimit; 
     }
 
     public override void Update(GameTime gameTime)
@@ -66,10 +81,23 @@ internal class BirdComponent : DrawableGameComponent
 
         position += velocity;
 
+        if ((position.X < 0 || position.X > GraphicsDevice.Viewport.Width || position.Y < 0 || position.Y > GraphicsDevice.Viewport.Height) && respawnCount < MaxRespawnLimit)
+        {
+            respawnCount++;
+            remainingBirds--;
+
+
+            position = targetPosition = new Vector2(slingShot.Position.X + 67, slingShot.Position.Y - 5);
+            velocity = Vector2.Zero;
+
+            progressBar.ResetProgress();
+        }
+
         previousMouseState = mouseState;
 
         base.Update(gameTime);
     }
+
 
     public override void Draw(GameTime gameTime)
     {
@@ -80,9 +108,12 @@ internal class BirdComponent : DrawableGameComponent
 
         spriteBatch.Draw(birdTexture, new Rectangle((int)drawPosition.X, (int)drawPosition.Y, imageWidth, imageHeight), sourceRectangle, Color.White);
 
+        // Draw remaining birds count using SpriteFont
+        spriteBatch.DrawString(font, $"Remaining Birds: {remainingBirds}", new Vector2(525, 40), Color.Black);
+
         if (progressBar.Progress == 0.0f && mouseClickedAtZeroProgress)
         {
-            spriteBatch.DrawString(font, "Please Use The SpaceBar To Select\nA Speed First Then Click", new Vector2(10, 10), Color.Red);
+            spriteBatch.DrawString(font, "Please Use The SpaceBar To Select\nA Speed First Then Click", new Vector2(10, 30), Color.Red);
         }
         if (progressBar.Progress > 0.0f)
         {

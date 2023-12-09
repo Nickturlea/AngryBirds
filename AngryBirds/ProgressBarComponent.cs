@@ -63,6 +63,13 @@ public class ProgressBarComponent : DrawableGameComponent
         progressBarFillRectangle.Width = (int)(progressBarRectangle.Width * progress);
     }
 
+    // Add a ResetProgress method
+    public void ResetProgress()
+    {
+        progress = 0.0f;
+        progressBarFillRectangle.Width = 0;
+    }
+
     private Texture2D CreateTexture(GraphicsDevice graphicsDevice, int width, int height, Color color)
     {
         Texture2D texture = new Texture2D(graphicsDevice, width, height);

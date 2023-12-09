@@ -151,10 +151,11 @@ internal class PlayScene : GameScene
         Vector2 yellowBPosition2 = GenerateRandomPosition((int)yellowSize.X, (int)yellowSize.Y);
         YellowBirdComponent yellowBird2 = new YellowBirdComponent(game, yellowBPosition2, yellowBirdTexture, (int)yellowSize.X, (int)yellowSize.Y);
 
-        Vector2 birdPosition = new Vector2(slingShotPosition.X + 67, slingShotPosition.Y - 5);
+        Vector2 birdPosition = new Vector2(slingShot.Position.X + 67, slingShot.Position.Y - 5);
         Vector2 progressBarPosition = new Vector2(birdPosition.X - 150, birdPosition.Y - 110);
         progressBar = new ProgressBarComponent(game, progressBarPosition, 200, 20);
-        bird = new BirdComponent(game, birdPosition, birdTexture, 105, 105, aimShot, progressBar, gameFont);
+        bird = new BirdComponent(game, birdPosition, birdTexture, 105, 105, aimShot, progressBar, gameFont, slingShot);
+
 
 
         pixelTexture = new Texture2D(GraphicsDevice, 1, 1);
