@@ -15,7 +15,7 @@ internal class BirdComponent : DrawableGameComponent
     private MouseState previousMouseState;
     private AimShotComponent aimShot;
     private ProgressBarComponent progressBar;
-    private SpriteFont font; // New property for the font
+    private SpriteFont font; 
     private bool mouseClickedAtZeroProgress;
 
     public BirdComponent(Game game, Vector2 initialPosition, Texture2D birdTexture, int width, int height, AimShotComponent aimShot, ProgressBarComponent progressBar, SpriteFont font) // Added SpriteFont parameter
@@ -30,7 +30,7 @@ internal class BirdComponent : DrawableGameComponent
         this.imageHeight = height;
         this.aimShot = aimShot;
         this.progressBar = progressBar;
-        this.font = font; // Set the font
+        this.font = font; 
         this.mouseClickedAtZeroProgress = false;
     }
 
@@ -55,11 +55,10 @@ internal class BirdComponent : DrawableGameComponent
                     float speed = 3f + 10f * progress;
                     targetPosition = new Vector2(mouseState.X, mouseState.Y);
                     velocity = Vector2.Normalize(targetPosition - position) * speed;
-                    mouseClickedAtZeroProgress = false; // Reset the flag if progress is greater than 0
+                    mouseClickedAtZeroProgress = false; 
                 }
                 else
                 {
-                    // Set the flag if the progress is 0
                     mouseClickedAtZeroProgress = true;
                 }
             }
@@ -81,13 +80,10 @@ internal class BirdComponent : DrawableGameComponent
 
         spriteBatch.Draw(birdTexture, new Rectangle((int)drawPosition.X, (int)drawPosition.Y, imageWidth, imageHeight), sourceRectangle, Color.White);
 
-        // Draw the font only when the progress bar is at 0 and the mouse was clicked
         if (progressBar.Progress == 0.0f && mouseClickedAtZeroProgress)
         {
-            spriteBatch.DrawString(font, "Please Use The SpaceBar To Select A Speed First Then Click", new Vector2(5, 5), Color.Red); // Replace "Your Text Here" with the desired text and adjust the position
+            spriteBatch.DrawString(font, "Please Use The SpaceBar To Select\nA Speed First Then Click", new Vector2(10, 10), Color.Red);
         }
-
-        // Reset the flag when progress is greater than 0
         if (progressBar.Progress > 0.0f)
         {
             mouseClickedAtZeroProgress = false;

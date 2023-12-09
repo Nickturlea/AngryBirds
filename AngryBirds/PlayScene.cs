@@ -26,6 +26,7 @@ internal class PlayScene : GameScene
     private string gameExplanation = "To start the game hold 'SpaceBar'\n to increase the speed of the\n bird then let go at desired\n location, then click in the\n" +
         "shooting area to fire the bird\n at the boxes";
     private Texture2D pixelTexture;
+    private int score = 0;
 
 
     private Vector2 GenerateRandomPosition(int width, int height)
@@ -52,6 +53,7 @@ internal class PlayScene : GameScene
             if (birdBounds.Intersects(box.GetBounds()))
             {
                 Components.Remove(box);
+                score += 3; 
             }
         }
 
@@ -61,6 +63,7 @@ internal class PlayScene : GameScene
             if (birdBounds.Intersects(barrelItem.GetBounds()))
             {
                 Components.Remove(barrelItem);
+                score += 4; 
             }
         }
 
@@ -70,6 +73,7 @@ internal class PlayScene : GameScene
             if (birdBounds.Intersects(pigItem.GetBounds()))
             {
                 Components.Remove(pigItem);
+                score += 10; 
             }
         }
 
@@ -79,6 +83,7 @@ internal class PlayScene : GameScene
             if (birdBounds.Intersects(yellowBirdItem.GetBounds()))
             {
                 Components.Remove(yellowBirdItem);
+                score += 8; 
             }
         }
     }
@@ -90,10 +95,9 @@ internal class PlayScene : GameScene
         Game1 g = (Game1)game;
         this.sb = g._spriteBatch;
 
-        // Access Content from the Game class
+
         gameFont = g.Content.Load<SpriteFont>("Fonts/MainFont");
 
-        // Loading the proper textures
         currBackGround = g.Content.Load<Texture2D>("Images/startLevelBackground");
         Texture2D slingShotTexture = g.Content.Load<Texture2D>("Images/SlingShot");
         Texture2D birdTexture = g.Content.Load<Texture2D>("Images/BirdSprite");
@@ -219,7 +223,7 @@ internal class PlayScene : GameScene
         bird.Draw(gameTime);
         aimShot.Draw(gameTime);
 
-        // Draw background for text
+
         Vector2 explanationPosition = new Vector2(20, 600);
         Vector2 explanationSize = explanationFont.MeasureString(gameExplanation);
         Rectangle backgroundRect = new Rectangle(
@@ -229,8 +233,13 @@ internal class PlayScene : GameScene
             (int)explanationSize.Y);
         sb.Draw(pixelTexture, backgroundRect, Color.Gray);
 
-        // Draw the text
+
         sb.DrawString(explanationFont, gameExplanation, explanationPosition, Color.Black);
+
+        string scoreText = "Score: " + score;
+        Vector2 scorePosition = new Vector2(600, 10);
+
+        sb.DrawString(gameFont, scoreText, scorePosition, Color.Black);
 
         sb.End();
 
