@@ -18,12 +18,12 @@ internal class BirdComponent : DrawableGameComponent
     private SpriteFont font;
     private bool mouseClickedAtZeroProgress;
 
-    private SlingShotComponent slingShot; // Added SlingShotComponent
+    private SlingShotComponent slingShot; 
 
     private int respawnCount;
     private const int MaxRespawnLimit = 2;
 
-    private int remainingBirds; // New variable to track remaining birds
+    private int remainingBirds;
 
     public int RemainingBirds
     {
@@ -108,7 +108,7 @@ internal class BirdComponent : DrawableGameComponent
 
         spriteBatch.Draw(birdTexture, new Rectangle((int)drawPosition.X, (int)drawPosition.Y, imageWidth, imageHeight), sourceRectangle, Color.White);
 
-        // Draw remaining birds count using SpriteFont
+
         spriteBatch.DrawString(font, $"Remaining Birds: {remainingBirds}", new Vector2(525, 40), Color.Black);
 
         if (progressBar.Progress == 0.0f && mouseClickedAtZeroProgress)
