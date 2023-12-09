@@ -14,7 +14,6 @@ public class ProgressBarComponent : DrawableGameComponent
 
     private float progress; // Value between 0.0f (empty) and 1.0f (full)
 
-    // Add a public property for progress
     public float Progress
     {
         get { return progress; }
@@ -26,26 +25,19 @@ public class ProgressBarComponent : DrawableGameComponent
     {
         spriteBatch = new SpriteBatch(game.GraphicsDevice);
 
-        // Load textures or create them dynamically
         progressBarTexture = CreateTexture(game.GraphicsDevice, width, height, Color.LightSkyBlue);
         progressBarFillTexture = CreateTexture(game.GraphicsDevice, width, height, Color.Red);
-
-        // Set the rectangles for the progress bar background and fill
         progressBarRectangle = new Rectangle((int)position.X, (int)position.Y, width, height);
-        progressBarFillRectangle = new Rectangle((int)position.X, (int)position.Y, 0, height); // Start with an empty fill
+        progressBarFillRectangle = new Rectangle((int)position.X, (int)position.Y, 0, height);
         previousKeyboardState = Keyboard.GetState();
         previousMouseState = Mouse.GetState();
     }
 
     public override void Update(GameTime gameTime)
     {
-        // Get the current state of the keyboard
         KeyboardState keyboardState = Keyboard.GetState();
-
-        // Check if the space bar is currently being pressed
         if (keyboardState.IsKeyDown(Keys.Space))
         {
-            // Increase the progress while the space bar is held down
             SetProgress(progress + (float)gameTime.ElapsedGameTime.TotalSeconds); // Assuming 1 second to fully charge
         }
 

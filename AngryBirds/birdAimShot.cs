@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
+using Microsoft.Xna.Framework.Input;
 
 namespace AngryBirds
 {
@@ -11,14 +11,13 @@ namespace AngryBirds
         private Vector2 position;
         private int imageWidth;
         private int imageHeight;
+        public int ImageWidth => imageWidth;
+        public int ImageHeight => imageHeight;
+        public bool Visible { get; set; } = false;
 
-        public bool Visible { get; set; } 
-
-
-        public birdAimShot(Game game, Vector2 initialPosition, Texture2D slingShotTexture, int width, int height) : base(game)
+        public birdAimShot(Game game, Texture2D slingShotTexture, int width, int height) : base(game)
         {
             this.spriteBatch = new SpriteBatch(game.GraphicsDevice);
-            this.position = initialPosition;
             this.BoxTexture = slingShotTexture;
             this.imageWidth = width;
             this.imageHeight = height;
@@ -32,6 +31,11 @@ namespace AngryBirds
                 spriteBatch.Draw(BoxTexture, new Rectangle((int)position.X, (int)position.Y, imageWidth, imageHeight), Color.White);
                 spriteBatch.End();
             }
+        }
+
+        public void UpdatePosition(Vector2 newPosition)
+        {
+            position = newPosition;
         }
 
         public Rectangle GetBounds()
