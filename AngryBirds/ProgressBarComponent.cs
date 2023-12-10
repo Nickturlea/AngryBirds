@@ -9,6 +9,8 @@ public class ProgressBarComponent : DrawableGameComponent
     private Texture2D progressBarFillTexture;
     private Rectangle progressBarRectangle;
     private Rectangle progressBarFillRectangle;
+    private bool isIncreasing = true; // Flag to control the direction of progress
+    private bool isPaused = false; // Flag to control whether the progress is paused
     private KeyboardState previousKeyboardState;
     private MouseState previousMouseState;
 

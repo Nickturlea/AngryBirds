@@ -16,6 +16,11 @@ namespace AngryBirds
         private Texture2D backgroundmenuTexture;
         string[] menuItems = { "Start Game", "Controls", "Contact Support / Help", "High Score", "About", "Quit"}; 
 
+
+
+
+
+
         public StartScene(Game game) : base(game)
         {
 

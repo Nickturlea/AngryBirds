@@ -10,6 +10,7 @@ namespace AngryBirds
         public SpriteBatch _spriteBatch;
         private StartScene startScene;
         private AboutScene aboutScene;
+        EndScene endScene;
         private PlayScene playScene;
 
         public Game1()
@@ -45,14 +46,12 @@ namespace AngryBirds
 
             playScene = new PlayScene(this);
             this.Components.Add(playScene);
-
-
-   
-            
-
+            endScene = new EndScene(this, playScene);
+            this.Components.Add(endScene); 
 
         }
-        private void hideAllScenes()
+
+        public void hideAllScenes()
         {
             foreach (GameComponent item in Components)
             {
@@ -62,6 +61,12 @@ namespace AngryBirds
                     gs.hide();
                 }
             }
+        }
+
+        public void ShowEndScene()
+        {
+            hideAllScenes();
+            endScene.Show();
         }
 
         protected override void Update(GameTime gameTime)

@@ -17,18 +17,41 @@ internal class BirdComponent : DrawableGameComponent
     private ProgressBarComponent progressBar;
     private SpriteFont font;
     private bool mouseClickedAtZeroProgress;
+    public bool IsLaunched { get; private set; }
 
-    private SlingShotComponent slingShot; 
+    public Vector2 Position
+    {
+        get { return position; }
+    }
+
+
+    public float LaunchCount { get; private set; } = 0;
+
+
+    private SlingShotComponent slingShot;
+
+    public bool MouseClickedAtZeroProgress
+    {
+        get { return mouseClickedAtZeroProgress; }
+    }
 
     private int respawnCount;
-    private const int MaxRespawnLimit = 2;
 
-    private int remainingBirds;
+    public const int MaxRespawnLimit = 3;
 
-    public int RemainingBirds
+    public int RespawnCount
     {
-        get { return remainingBirds; }
+        get { return respawnCount; }
     }
+
+    //private int remainingAnimals;
+
+    
+
+    //public int RemainingAnimals
+    //{
+    //    get { return remainingAnimals; }
+    //}
 
     public BirdComponent(Game game, Vector2 initialPosition, Texture2D birdTexture, int width, int height, AimShotComponent aimShot, ProgressBarComponent progressBar, SpriteFont font, SlingShotComponent slingShot)
         : base(game)
@@ -46,83 +69,34 @@ internal class BirdComponent : DrawableGameComponent
         this.mouseClickedAtZeroProgress = false;
         this.slingShot = slingShot; 
         this.respawnCount = 0;
-        this.remainingBirds = MaxRespawnLimit; 
-    }
-
-    public override void Update(GameTime gameTime)
-    {
-        MouseState mouseState = Mouse.GetState();
-
-        if (mouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
-        {
-            Rectangle aimShotBounds = new Rectangle(
-                (int)aimShot.positionAimshot.X,
-                (int)aimShot.positionAimshot.Y,
-                aimShot.imageWidthAimshot,
-                aimShot.imageHeightAimshot);
-
-            if (aimShotBounds.Contains(mouseState.X, mouseState.Y))
-            {
-                float progress = progressBar.Progress;
-
-                if (progress > 0.0f)
-                {
-                    float speed = 3f + 10f * progress;
-                    targetPosition = new Vector2(mouseState.X, mouseState.Y);
-                    velocity = Vector2.Normalize(targetPosition - position) * speed;
-                    mouseClickedAtZeroProgress = false; 
-                }
-                else
-                {
-                    mouseClickedAtZeroProgress = true;
-                }
-            }
-        }
-
-        position += velocity;
-
-        if ((position.X < 0 || position.X > GraphicsDevice.Viewport.Width || position.Y < 0 || position.Y > GraphicsDevice.Viewport.Height) && respawnCount < MaxRespawnLimit)
-        {
-            respawnCount++;
-            remainingBirds--;
-
-
-            position = targetPosition = new Vector2(slingShot.Position.X + 67, slingShot.Position.Y - 5);
-            velocity = Vector2.Zero;
-
-            progressBar.ResetProgress();
-        }
-
-        previousMouseState = mouseState;
-
-        base.Update(gameTime);
     }
 
 
-    public override void Draw(GameTime gameTime)
+    public void Launch(float power, Vector2 direction)
     {
-        spriteBatch.Begin();
-
-        Rectangle sourceRectangle = new Rectangle(0, 0, 125, 125);
-        Vector2 drawPosition = new Vector2(position.X - imageWidth / 2, position.Y - imageHeight / 2);
-
-        spriteBatch.Draw(birdTexture, new Rectangle((int)drawPosition.X, (int)drawPosition.Y, imageWidth, imageHeight), sourceRectangle, Color.White);
-
-
-        spriteBatch.DrawString(font, $"Remaining Birds: {remainingBirds}", new Vector2(525, 40), Color.Black);
-
-        if (progressBar.Progress == 0.0f && mouseClickedAtZeroProgress)
+        if (!IsLaunched)
         {
-            spriteBatch.DrawString(font, "Please Use The SpaceBar To Select\nA Speed First Then Click", new Vector2(10, 30), Color.Red);
+            // the birdAimShot should be passed
+            velocity = direction * power * 10; // Apply power and direction to velocity
+            IsLaunched = true;
+            LaunchCount++; // Increment launch count each time the bird is launched
         }
-        if (progressBar.Progress > 0.0f)
-        {
-            mouseClickedAtZeroProgress = false;
-        }
+    }
 
-        spriteBatch.End();
 
-        base.Draw(gameTime);
+    private bool IsOutOfScreenBounds(Vector2 position)
+    {
+        return position.X < 0 || position.X > GraphicsDevice.Viewport.Width ||
+               position.Y < 0 || position.Y > GraphicsDevice.Viewport.Height;
+    }
+
+    private void Respawn()
+    {
+        position = targetPosition = new Vector2(slingShot.Position.X + 67, slingShot.Position.Y - 5);
+        velocity = Vector2.Zero;
+        IsLaunched = false;
+        respawnCount++;
+        progressBar.ResetProgress();
     }
 
 
@@ -134,4 +108,86 @@ internal class BirdComponent : DrawableGameComponent
             imageWidth,
             imageHeight);
     }
+
+
+    public override void Update(GameTime gameTime)
+    {
+        MouseState mouseState = Mouse.GetState();
+
+        // Check for mouse click and if it's within the aimShot component
+        if (mouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
+        {
+            Rectangle aimShotBounds = new Rectangle(
+                (int)aimShot.positionAimshot.X,
+                (int)aimShot.positionAimshot.Y,
+                aimShot.imageWidthAimshot,
+                aimShot.imageHeightAimshot);
+
+            if (aimShotBounds.Contains(mouseState.X, mouseState.Y) && !IsLaunched)
+            {
+                float progress = progressBar.Progress;
+                if (progress > 0.0f)
+                {
+                    // Calculate the direction vector from the slingshot to the mouse click position.
+                    Vector2 aimDirection = Vector2.Normalize(new Vector2(mouseState.X, mouseState.Y) - slingShot.Position);
+                    // Call the Launch method with the progress as power and the calculated direction.
+                    Launch(progress, aimDirection);
+                    mouseClickedAtZeroProgress = false;
+                    aimShot.Visible = false; // Hide the aimShot as the bird has been launched.
+                }
+                else
+                {
+                    mouseClickedAtZeroProgress = true;
+                    aimShot.Visible = false; // Hide the aimShot as there's an attempt to launch without power.
+                }
+            }
+        }
+
+        // Apply velocity if the bird has been launched
+        if (IsLaunched)
+        {
+            position += velocity;
+        }
+
+        // Check if the bird is off screen and respawn if needed
+        if (IsOutOfScreenBounds(position) && respawnCount < MaxRespawnLimit)
+        {
+            Respawn();
+        }
+        else if (IsOutOfScreenBounds(position) && respawnCount >= MaxRespawnLimit)
+        {
+            // If the bird is off screen and the max respawn limit reached, stop the bird
+            velocity = Vector2.Zero;
+            IsLaunched = false; // Allow the bird to be launched again
+        }
+
+        previousMouseState = mouseState;
+        base.Update(gameTime);
+    }
+
+
+
+    public override void Draw(GameTime gameTime)
+    {
+        spriteBatch.Begin();
+
+        Rectangle sourceRectangle = new Rectangle(0, 0, 125, 125);
+        Vector2 drawPosition = new Vector2(position.X - imageWidth / 2, position.Y - imageHeight / 2);
+
+        spriteBatch.Draw(birdTexture, new Rectangle((int)drawPosition.X, (int)drawPosition.Y, imageWidth, imageHeight), sourceRectangle, Color.White);
+
+        if (progressBar.Progress == 0.0f && mouseClickedAtZeroProgress)
+        {
+            spriteBatch.DrawString(font, "Please Use The SpaceBar To Select\nA Speed First Then Click", new Vector2(7, 19), Color.Red);
+        }
+        if (progressBar.Progress > 0.0f)
+        {
+            mouseClickedAtZeroProgress = false;
+        }
+
+        spriteBatch.End();
+
+        base.Draw(gameTime);
+    }
+
 }
