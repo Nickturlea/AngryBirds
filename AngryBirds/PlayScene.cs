@@ -54,7 +54,7 @@ internal class PlayScene : GameScene
             if (birdBounds.Intersects(box.GetBounds()))
             {
                 Components.Remove(box);
-                score += 1; 
+                score += 1;
             }
         }
 
@@ -64,7 +64,8 @@ internal class PlayScene : GameScene
             if (birdBounds.Intersects(barrelItem.GetBounds()))
             {
                 Components.Remove(barrelItem);
-                score += 1; 
+                score += 1;
+
             }
         }
 
@@ -75,7 +76,7 @@ internal class PlayScene : GameScene
             {
                 counterOfAnimals--;
                 Components.Remove(pigItem);
-                score += 5; 
+                score += 5;
             }
         }
 
@@ -86,7 +87,7 @@ internal class PlayScene : GameScene
             {
                 counterOfAnimals--;
                 Components.Remove(yellowBirdItem);
-                score += 10; 
+                score += 10;
             }
         }
     }
@@ -183,6 +184,19 @@ internal class PlayScene : GameScene
         Components.Add(yellowBird2);
         Components.Add(birdAimShot);
     }
+
+
+
+
+    public void ResetGame()
+    {
+        // Clear existing components
+        //Components.Clear();
+
+        // Re-initialize all components
+       // InitializeComponents();
+    }
+
 
     public override void Update(GameTime gameTime)
     {

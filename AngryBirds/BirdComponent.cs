@@ -46,8 +46,6 @@ internal class BirdComponent : DrawableGameComponent
 
     //private int remainingAnimals;
 
-    
-
     //public int RemainingAnimals
     //{
     //    get { return remainingAnimals; }
@@ -162,9 +160,10 @@ internal class BirdComponent : DrawableGameComponent
         }
 
         previousMouseState = mouseState;
+
+
         base.Update(gameTime);
     }
-
 
 
     public override void Draw(GameTime gameTime)

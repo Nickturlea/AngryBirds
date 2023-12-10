@@ -96,6 +96,7 @@ namespace AngryBirds
                 selectedIndex = startScene.Menu.selectedIndex;
                 if (selectedIndex == 0 && ks.IsKeyDown(Keys.Enter))
                 {
+                    playScene.ResetGame();  // Reset full game 
                     hideAllScenes();
                     playScene.show();
                 }
@@ -141,6 +142,9 @@ namespace AngryBirds
 
             base.Update(gameTime);
         }
+
+     
+
 
         protected override void Draw(GameTime gameTime)
         {
