@@ -14,11 +14,15 @@ namespace AngryBirds
         public MenuComponent Menu { get; set; }
         private SpriteBatch sb;
         private Texture2D backgroundmenuTexture;
-        string[] menuItems = { "Start Game", "Controls", "Contact Support / Help", "High Score", "About", "Quit"}; 
+        string[] menuItems = { "Start Game", "Controls", "Contact Support / Help", "High Score", "About", "Quit"};
 
 
 
-
+        public void Show()
+        {
+            this.Visible = true;
+            this.Enabled = true;
+        }
 
 
         public StartScene(Game game) : base(game)

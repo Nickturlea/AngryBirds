@@ -23,7 +23,11 @@ namespace AngryBirds
         private const int maxNameLength = 12;
         private StringBuilder inputText = new StringBuilder();
         private KeyboardState oldKeyboardState;
-        private Texture2D pixelTexture;
+        private Button mainMenuButton;
+        private Button nextLevelButton;
+        private Button exitButton;
+        private Texture2D tmpTex;
+        private Texture2D btnTex;
         private string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "MadBird.txt");
 
         PlayScene PlayScene { get; set; }
@@ -36,8 +40,31 @@ namespace AngryBirds
             gameFont = g.Content.Load<SpriteFont>("Fonts/MainFont");
             currBackGround = g.Content.Load<Texture2D>("Images/theENd");
 
-            pixelTexture = new Texture2D(GraphicsDevice, 1, 1);
-            pixelTexture.SetData(new[] { Color.LightSkyBlue });
+            tmpTex = new Texture2D(GraphicsDevice, 1, 1);
+            tmpTex.SetData(new[] { Color.LightSkyBlue });
+
+            btnTex = new Texture2D(GraphicsDevice, 200, 50); // Size of the button
+            var buttonColor = new Color[200 * 50];
+            for (int i = 0; i < buttonColor.Length; i++)
+                buttonColor[i] = Color.White; // Or any non-transparent color
+            btnTex.SetData(buttonColor);
+
+            // Calculatation for centering the buttons postions 
+            var screenWidth = GraphicsDevice.Viewport.Width;
+            var buttonWidth = tmpTex.Width;
+            var buttonHeight = tmpTex.Height;
+            var btnX = (screenWidth - buttonWidth) / 2; // Center horizontally
+
+
+            // LoadContent or constructor
+            this.mainMenuButton = new Button(btnTex, new Vector2(btnX, 200), gameFont, "Main Menu"); 
+            this.nextLevelButton = new Button(btnTex, new Vector2(btnX, 300), gameFont, "Next Level");
+            this.exitButton = new Button(btnTex, new Vector2(btnX, 400), gameFont, "Exit");
+
+            // Subscribe the buttons 
+            mainMenuButton.Click += MainMenuButton_Click;
+            nextLevelButton.Click += NextLevelButton_Click;
+            exitButton.Click += ExitButton_Click;
 
 
             saveScore = new SaveScore(); 
@@ -84,6 +111,11 @@ namespace AngryBirds
             }
             oldKeyboardState = keyboardState;
             base.Update(gameTime);
+
+            var mouseState = Mouse.GetState();
+            mainMenuButton.Update(mouseState);
+            nextLevelButton.Update(mouseState);
+            exitButton.Update(mouseState);
         }
 
         public override void Draw(GameTime gameTime)
@@ -94,13 +126,17 @@ namespace AngryBirds
             // Draw transparent background for text
             Rectangle backgroundRectangle = new Rectangle(80, 90, 400, 100); // Adjust the size to fit the text
             Color backgroundColor = new Color(173, 216, 230, 0.5f); // Light blue color with 50% opacity
-            sb.Draw(pixelTexture, backgroundRectangle, backgroundColor);
+            sb.Draw(tmpTex, backgroundRectangle, backgroundColor);
 
             if (isNameEntered)
             {
                 string scoreMessage = $"Player: {playerName} | Score: {PlayScene.score}";
                 Vector2 scorePosition = new Vector2(100, 100);
                 sb.DrawString(gameFont, scoreMessage, scorePosition, Color.Black);
+                // Draw the buttons
+                mainMenuButton.Draw(sb);
+                nextLevelButton.Draw(sb);
+                exitButton.Draw(sb);
             }
             else
             {
@@ -117,7 +153,7 @@ namespace AngryBirds
                 {
                     Rectangle errorBackgroundRectangle = new Rectangle(80, 220, 730, 50); 
                     Color errorBackgroundColor = new Color(173, 216, 230, 0.5f);
-                    sb.Draw(pixelTexture, errorBackgroundRectangle, errorBackgroundColor); // Draw the semi-transparent background
+                    sb.Draw(tmpTex, errorBackgroundRectangle, errorBackgroundColor); // Draw the semi-transparent background
 
                     Vector2 errorPosition = new Vector2(100, 225); 
                     sb.DrawString(gameFont, Error, errorPosition, Color.Red); // Draw the error text on top
@@ -127,6 +163,25 @@ namespace AngryBirds
             base.Draw(gameTime);
         }
 
+        private void MainMenuButton_Click(object sender, EventArgs e)
+        {
+            Game1 game = (Game1)Game;
+            game.hideAllScenes();
+            game.ShowMenuScene(); // Make sure this method exists in your Game1 class
+        }
+
+        private void NextLevelButton_Click(object sender, EventArgs e)
+        {
+            Game1 game = (Game1)Game;
+            game.hideAllScenes();
+            game.ShowLevelTwoScene(); // Make sure this method exists in your Game1 class
+        }
+
+        private void ExitButton_Click(object sender, EventArgs e)
+        {
+            Game1 game = (Game1)Game;
+            game.Exit();
+        }
 
         public void Show()
         {

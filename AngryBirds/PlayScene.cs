@@ -26,7 +26,7 @@ internal class PlayScene : GameScene
     private SpriteFont explanationFont;
     private string gameExplanation = "To start the game hold 'SpaceBar'\n to increase the speed of the\n bird then let go at desired\n location, then click in the\n" +
         "shooting area to fire the bird\n at the boxes";
-    private Texture2D pixelTexture;
+    private Texture2D tmpTex;
     public int score = 0;
 
 
@@ -103,7 +103,7 @@ internal class PlayScene : GameScene
 
         currBackGround = g.Content.Load<Texture2D>("Images/startLevelBackground");
         Texture2D slingShotTexture = g.Content.Load<Texture2D>("Images/SlingShot");
-        Texture2D birdTexture = g.Content.Load<Texture2D>("Images/BirdSprite");
+        Texture2D birdTexture = g.Content.Load<Texture2D>("Images/freshBirdSprite");
         Texture2D boxTexture = g.Content.Load<Texture2D>("Images/brownBox");
         Texture2D barrelTexture = g.Content.Load<Texture2D>("Images/barrel");
         Texture2D pigTexture = g.Content.Load<Texture2D>("Images/pig");
@@ -164,8 +164,8 @@ internal class PlayScene : GameScene
 
 
 
-        pixelTexture = new Texture2D(GraphicsDevice, 1, 1);
-        pixelTexture.SetData(new[] { Color.White });
+        tmpTex = new Texture2D(GraphicsDevice, 1, 1);
+        tmpTex.SetData(new[] { Color.White });
 
         Components.Add(progressBar);
         Components.Add(yellowBird);
@@ -211,8 +211,8 @@ internal class PlayScene : GameScene
 
         // Update bird component logic
         bird.Update(gameTime); // This call will handle the bird's launching and respawning logic.
-        // Check if the bird has no more respawns left and transition to EndScene
-        if (bird.RespawnCount >= BirdComponent.MaxRespawnLimit)
+        // Check if the bird shots left using teh respawn count and the counter animals in case they get rid of all the bird 
+        if (bird.RespawnCount >= BirdComponent.MaxRespawnLimit || counterOfAnimals == 0)
         {
             // Transition to the EndScene
             Game1 game = (Game1)Game;
@@ -253,7 +253,7 @@ internal class PlayScene : GameScene
             (int)explanationPosition.Y,
             (int)explanationSize.X,
             (int)explanationSize.Y);
-        sb.Draw(pixelTexture, backgroundRect, Color.LightSkyBlue); // Draw a semi-transparent
+        sb.Draw(tmpTex, backgroundRect, Color.LightSkyBlue); // Draw a semi-transparent
 
 
         sb.DrawString(explanationFont, gameExplanation, explanationPosition, Color.GhostWhite); // Draw the game explanation text over the background rectangle

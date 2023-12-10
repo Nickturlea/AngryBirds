@@ -176,6 +176,8 @@ internal class BirdComponent : DrawableGameComponent
 
         spriteBatch.Draw(birdTexture, new Rectangle((int)drawPosition.X, (int)drawPosition.Y, imageWidth, imageHeight), sourceRectangle, Color.White);
 
+        spriteBatch.DrawString(font, $"Total Allowed Bird Flys is 3!\nHere's Your Count: {respawnCount.ToString()}",new Vector2(7, 410), Color.AntiqueWhite);
+
         if (progressBar.Progress == 0.0f && mouseClickedAtZeroProgress)
         {
             spriteBatch.DrawString(font, "Please Use The SpaceBar To Select\nA Speed First Then Click", new Vector2(7, 19), Color.Red);

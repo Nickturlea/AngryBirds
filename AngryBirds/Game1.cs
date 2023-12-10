@@ -11,6 +11,7 @@ namespace AngryBirds
         private StartScene startScene;
         private AboutScene aboutScene;
         EndScene endScene;
+        LevelTwo levelTwo;
         private PlayScene playScene;
 
         public Game1()
@@ -47,7 +48,8 @@ namespace AngryBirds
             playScene = new PlayScene(this);
             this.Components.Add(playScene);
             endScene = new EndScene(this, playScene);
-            this.Components.Add(endScene); 
+            this.Components.Add(endScene);
+
 
         }
 
@@ -68,6 +70,19 @@ namespace AngryBirds
             hideAllScenes();
             endScene.Show();
         }
+        public void ShowLevelTwoScene() 
+        {
+            hideAllScenes();
+            levelTwo = new LevelTwo(this);
+            this.Components.Add(levelTwo);
+            levelTwo.show();
+        }
+
+        public void ShowMenuScene()
+        {
+            hideAllScenes();
+            startScene.Show();
+        }
 
         protected override void Update(GameTime gameTime)
         {
@@ -84,12 +99,24 @@ namespace AngryBirds
                     hideAllScenes();
                     playScene.show();
                 }
-                else if (selectedIndex == 3 && ks.IsKeyDown(Keys.Enter))
+                else if (selectedIndex == 1 && ks.IsKeyDown(Keys.Enter)) // Controls 
+                {
+                    
+                } 
+                else if (selectedIndex == 2 && ks.IsKeyDown(Keys.Enter)) // Contact Support / help
+                {
+                    // 
+                }
+                else if (selectedIndex == 3 && ks.IsKeyDown(Keys.Enter)) // High Scores
+                {
+                    // 
+                }
+                else if (selectedIndex == 4 && ks.IsKeyDown(Keys.Enter)) // About 
                 {
                     hideAllScenes();
                     aboutScene.show();
-                } 
-                else if (selectedIndex == 4 && ks.IsKeyDown(Keys.Enter))
+                }
+                else if (selectedIndex == 5 && ks.IsKeyDown(Keys.Enter)) // Quit 
                 {
                     Exit();
                 }

@@ -99,6 +99,18 @@
 /processorParam:TextureFormat=Color
 /build:Images/brownBox.png
 
+#begin Images/freshBirdSprite.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/freshBirdSprite.png
+
 #begin Images/greenBird.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -110,6 +122,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Images/greenBird.png
+
+#begin Images/levelTwoBackGround.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/levelTwoBackGround.png
 
 #begin Images/MadBirdsMenu.png
 /importer:TextureImporter
