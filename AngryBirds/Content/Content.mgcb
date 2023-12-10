@@ -243,3 +243,15 @@
 /processorParam:TextureFormat=Color
 /build:Images/yellowBird.png
 
+#begin Music/birdLaunch.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/birdLaunch.wav
+
+#begin Music/startMusic.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Music/startMusic.mp3
+

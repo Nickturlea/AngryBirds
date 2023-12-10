@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -127,6 +128,7 @@ namespace AngryBirds
             Texture2D aimshotTexture = g.Content.Load<Texture2D>("Images/aimShot");
             birdAimShotTexture = g.Content.Load<Texture2D>("Images/birdAimShot");
             Texture2D evilBirdTexture = g.Content.Load<Texture2D>("Images/BirdSprite");
+            SoundEffect launchSound = g.Content.Load<SoundEffect>("Music/birdLaunch");
 
 
             birdAimShot = new birdAimShot(game, birdAimShotTexture, 50, 50);
@@ -181,7 +183,8 @@ namespace AngryBirds
             Vector2 birdPosition = new Vector2(slingShot.Position.X + 67, slingShot.Position.Y - 5);
             Vector2 progressBarPosition = new Vector2(birdPosition.X - 150, birdPosition.Y - 110);
             progressBar = new ProgressBarComponent(game, progressBarPosition, 200, 20);
-            bird = new BirdComponent(game, birdPosition, birdTexture, 105, 105, aimShot, progressBar, gameFont, slingShot);
+
+            bird = new BirdComponent(game, birdPosition, birdTexture, 75, 75, aimShot, progressBar, gameFont, slingShot, launchSound);
 
             Vector2 evilBirdPosition = new Vector2(1200, 550);
             evil = new EvilBirdComponent(game, evilBirdPosition, evilBirdTexture, 50, 50);

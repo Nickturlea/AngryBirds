@@ -1,9 +1,11 @@
 ﻿using AngryBirds;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Linq;
+using System.Reflection.Metadata;
 
 internal class PlayScene : GameScene
 {
@@ -109,6 +111,7 @@ internal class PlayScene : GameScene
         Texture2D aimshotTexture = g.Content.Load<Texture2D>("Images/aimShot");
         birdAimShotTexture = g.Content.Load<Texture2D>("Images/birdAimShot");
         explanationFont = g.Content.Load<SpriteFont>("Fonts/MainFont");
+        SoundEffect launchSound = g.Content.Load<SoundEffect>("Music/birdLaunch");
 
         birdAimShot = new birdAimShot(game, birdAimShotTexture, 50, 50);
 
@@ -162,7 +165,7 @@ internal class PlayScene : GameScene
         Vector2 birdPosition = new Vector2(slingShot.Position.X + 67, slingShot.Position.Y - 5);
         Vector2 progressBarPosition = new Vector2(birdPosition.X - 150, birdPosition.Y - 110);
         progressBar = new ProgressBarComponent(game, progressBarPosition, 200, 20);
-        bird = new BirdComponent(game, birdPosition, birdTexture, 105, 105, aimShot, progressBar, gameFont, slingShot);
+        bird = new BirdComponent(game, birdPosition, birdTexture, 105, 105, aimShot, progressBar, gameFont, slingShot, launchSound);
 
         tmpTex = new Texture2D(GraphicsDevice, 1, 1);
         tmpTex.SetData(new[] { Color.White });

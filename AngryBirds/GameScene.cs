@@ -31,18 +31,6 @@ namespace AngryBirds
         }
 
 
-        //public override void Update(GameTime gameTime)
-        //{
-        //    foreach (var item in components)
-        //    {
-        //        if (item.Enabled)
-        //        {
-        //            item.Update(gameTime);
-        //        }
-        //    }
-
-        //    base.Update(gameTime);
-        //}
 
         public override void Update(GameTime gameTime)
         {

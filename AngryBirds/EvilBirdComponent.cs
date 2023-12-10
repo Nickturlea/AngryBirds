@@ -11,9 +11,9 @@ internal class EvilBirdComponent : DrawableGameComponent
     private int imageHeight;
     private int currentFrame;
     private float timer;
-    private const float AnimationInterval = 2.0f; // Duration for each animation cycle in seconds
-    private const float VerticalSpeed = 150.0f; // Speed of vertical movement
-    private const float PauseInterval = 1.0f; // Pause interval in seconds
+    private const float AnimationInterval = 1.0f; // Duration for each animation cycle in seconds
+    private const float VerticalSpeed = 200.0f; // Speed of vertical movement
+    private const float PauseInterval = 0.5f; // Pause interval in seconds
     private const int MaxFramesUp = 400; // Number of frames to move up
 
     private bool isMovingUp;

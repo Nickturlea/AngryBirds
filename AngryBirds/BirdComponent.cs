@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 
 internal class BirdComponent : DrawableGameComponent
 {
@@ -18,6 +19,8 @@ internal class BirdComponent : DrawableGameComponent
     private SpriteFont font;
     private bool mouseClickedAtZeroProgress;
     private bool spriteChanged = false;
+    private SoundEffect launchSound;
+    private SoundEffectInstance launchSoundInstance;
     public bool IsLaunched { get; private set; }
 
     public Vector2 Position
@@ -46,10 +49,10 @@ internal class BirdComponent : DrawableGameComponent
     private const int NumFrames = 3; 
     private int currentAnimationFrame = 0; 
     private const float FrameSwitchInterval = 0.2f; 
-    private float frameSwitchTimer = 0.0f; 
+    private float frameSwitchTimer = 0.0f;
 
-    public BirdComponent(Game game, Vector2 initialPosition, Texture2D birdTexture, int width, int height, AimShotComponent aimShot, ProgressBarComponent progressBar, SpriteFont font, SlingShotComponent slingShot)
-        : base(game)
+    public BirdComponent(Game game, Vector2 initialPosition, Texture2D birdTexture, int width, int height, AimShotComponent aimShot, ProgressBarComponent progressBar, SpriteFont font, SlingShotComponent slingShot, SoundEffect launchSound)
+       : base(game)
     {
         this.spriteBatch = new SpriteBatch(game.GraphicsDevice);
         this.position = initialPosition;
@@ -64,6 +67,9 @@ internal class BirdComponent : DrawableGameComponent
         this.mouseClickedAtZeroProgress = false;
         this.slingShot = slingShot;
         this.respawnCount = 0;
+        this.launchSound = launchSound;
+        this.launchSoundInstance = launchSound.CreateInstance();
+        this.launchSoundInstance.Volume = 0.5f; 
     }
 
     public void Launch(float power, Vector2 direction)
@@ -73,6 +79,9 @@ internal class BirdComponent : DrawableGameComponent
             velocity = direction * power * 10;
             IsLaunched = true;
             LaunchCount++;
+
+            // Play the launch sound
+            launchSoundInstance.Play();
         }
     }
 
