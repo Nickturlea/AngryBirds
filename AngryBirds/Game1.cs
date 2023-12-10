@@ -13,6 +13,8 @@ namespace AngryBirds
         EndScene endScene;
         LevelTwo levelTwo;
         private PlayScene playScene;
+        private ControlScene controlScene;
+        private ContactScene contactScene;
 
         public Game1()
         {
@@ -50,6 +52,12 @@ namespace AngryBirds
             endScene = new EndScene(this, playScene);
             this.Components.Add(endScene);
 
+            controlScene = new ControlScene(this);
+            this.Components.Add(controlScene);
+
+            contactScene = new ContactScene(this);
+            this.Components.Add(contactScene);
+
 
         }
 
@@ -70,6 +78,7 @@ namespace AngryBirds
             hideAllScenes();
             endScene.Show();
         }
+
         public void ShowLevelTwoScene() 
         {
             hideAllScenes();
@@ -96,17 +105,19 @@ namespace AngryBirds
                 selectedIndex = startScene.Menu.selectedIndex;
                 if (selectedIndex == 0 && ks.IsKeyDown(Keys.Enter))
                 {
-                    playScene.ResetGame();  // Reset full game 
                     hideAllScenes();
                     playScene.show();
                 }
                 else if (selectedIndex == 1 && ks.IsKeyDown(Keys.Enter)) // Controls 
                 {
-                    
+                    hideAllScenes();
+                    controlScene.show();
+                   
                 } 
                 else if (selectedIndex == 2 && ks.IsKeyDown(Keys.Enter)) // Contact Support / help
                 {
-                    // 
+                    hideAllScenes();
+                    contactScene.show();
                 }
                 else if (selectedIndex == 3 && ks.IsKeyDown(Keys.Enter)) // High Scores
                 {
@@ -131,6 +142,22 @@ namespace AngryBirds
                 }
             }
             if (playScene.Enabled)
+            {
+                if (ks.IsKeyDown(Keys.Escape))
+                {
+                    hideAllScenes();
+                    startScene.show();
+                }
+            }
+            if (controlScene.Enabled)
+            {
+                if (ks.IsKeyDown(Keys.Escape))
+                {
+                hideAllScenes();
+                startScene.show();
+                }
+            }
+            if (contactScene.Enabled)
             {
                 if (ks.IsKeyDown(Keys.Escape))
                 {

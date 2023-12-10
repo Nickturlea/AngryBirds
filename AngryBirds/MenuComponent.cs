@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SharpDX.DXGI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +22,9 @@ namespace AngryBirds
         private Color mainColor = Color.Black;
         private Color menuColor = Color.Red;
 
+
         private KeyboardState menu;
-        public MenuComponent(Game game, SpriteBatch sb,
-          SpriteFont mainFont, SpriteFont menuFont, string[] menus, Texture2D backgroundmenuTexture) : base(game)
+        public MenuComponent(Game game, SpriteBatch sb, SpriteFont mainFont, SpriteFont menuFont, string[] menus, Texture2D backgroundmenuTexture) : base(game)
         {
             this.sb = sb;
             this.mainFont = mainFont;
@@ -31,12 +32,16 @@ namespace AngryBirds
             this.backgroundmenuTexture = backgroundmenuTexture;
             menuItems = menus.ToList();
 
-            //positioning my menu, gotta convert so no magic numbers later
             float centerY = Shared.stage.Y / 2 - (menuItems.Count * mainFont.LineSpacing) / 2;
             float spacing = 100;
-            float centerX = spacing;
+
+            // Calculate the total width of all menu items
+            float totalWidth = menuItems.Max(item => menuFont.MeasureString(item).X);
+
+            // Calculate the X coordinate to center the menu horizontally
+            float centerX = (Shared.stage.X - totalWidth) / 2;
+
             position = new Vector2(centerX, centerY);
-            this.backgroundmenuTexture = backgroundmenuTexture;
         }
 
         public override void Update(GameTime gameTime)

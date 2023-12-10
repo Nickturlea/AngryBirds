@@ -7,16 +7,16 @@ namespace AngryBirds
     internal class YellowBirdComponent : DrawableGameComponent
     {
         private SpriteBatch spriteBatch;
-        private Texture2D BoxTexture;
+        private Texture2D BirdTexture;
         private Vector2 position;
         private int imageWidth;
         private int imageHeight;
 
-        public YellowBirdComponent(Game game, Vector2 initialPosition, Texture2D slingShotTexture, int width, int height) : base(game)
+        public YellowBirdComponent(Game game, Vector2 initialPosition, Texture2D yellowBird, int width, int height) : base(game)
         {
             this.spriteBatch = new SpriteBatch(game.GraphicsDevice);
             this.position = initialPosition;
-            this.BoxTexture = slingShotTexture;
+            this.BirdTexture = yellowBird;
             this.imageWidth = width;
             this.imageHeight = height;
         }
@@ -25,7 +25,7 @@ namespace AngryBirds
         {
             spriteBatch.Begin();
 
-            spriteBatch.Draw(BoxTexture, new Rectangle((int)position.X, (int)position.Y, imageWidth, imageHeight), Color.White);
+            spriteBatch.Draw(BirdTexture, new Rectangle((int)position.X, (int)position.Y, imageWidth, imageHeight), Color.White);
 
             spriteBatch.End();
 

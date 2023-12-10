@@ -12,7 +12,7 @@ namespace AngryBirds
         private List<GameComponent> components;
         public List<GameComponent> Components { get => components; set => components = value; }
 
-        public virtual void show() // show scene
+        public virtual void show() 
         {
             this.Enabled = true;
             this.Visible = true;

@@ -36,32 +36,30 @@ namespace AngryBirds
         {
             Game1 g = (Game1)game;
             this.sb = g._spriteBatch;
-            this.PlayScene = playScene; // make the Playsence not be null 
+            this.PlayScene = playScene; 
             gameFont = g.Content.Load<SpriteFont>("Fonts/MainFont");
             currBackGround = g.Content.Load<Texture2D>("Images/theENd");
 
             tmpTex = new Texture2D(GraphicsDevice, 1, 1);
             tmpTex.SetData(new[] { Color.LightSkyBlue });
 
-            btnTex = new Texture2D(GraphicsDevice, 200, 50); // Size of the button
+            btnTex = new Texture2D(GraphicsDevice, 200, 50); 
             var buttonColor = new Color[200 * 50];
             for (int i = 0; i < buttonColor.Length; i++)
-                buttonColor[i] = Color.White; // Or any non-transparent color
+                buttonColor[i] = Color.White; 
             btnTex.SetData(buttonColor);
 
-            // Calculatation for centering the buttons postions 
             var screenWidth = GraphicsDevice.Viewport.Width;
             var buttonWidth = tmpTex.Width;
             var buttonHeight = tmpTex.Height;
-            var btnX = (screenWidth - buttonWidth) / 2; // Center horizontally
+            var btnX = (screenWidth - buttonWidth) / 2; 
 
 
-            // LoadContent or constructor
             this.mainMenuButton = new Button(btnTex, new Vector2(btnX, 200), gameFont, "Main Menu"); 
             this.nextLevelButton = new Button(btnTex, new Vector2(btnX, 300), gameFont, "Next Level");
             this.exitButton = new Button(btnTex, new Vector2(btnX, 400), gameFont, "Exit");
 
-            // Subscribe the buttons 
+
             mainMenuButton.Click += MainMenuButton_Click;
             nextLevelButton.Click += NextLevelButton_Click;
             exitButton.Click += ExitButton_Click;
@@ -88,7 +86,7 @@ namespace AngryBirds
                         }
                         else if (key >= Keys.A && key <= Keys.Z && inputText.Length < maxNameLength)
                         {
-                            // Append the character to the input text
+
                             inputText.Append((char)(key - Keys.A + 'A'));
                         }
                         else if (key == Keys.Enter)
@@ -99,11 +97,11 @@ namespace AngryBirds
                                 playerName = inputText.ToString();
                                 saveScore.SavePlayerScore(playerName, PlayScene.score);
                                 inputText.Clear();
-                                displayError = false; // Reset error messge 
+                                displayError = false; 
                             }
                             else
                             {
-                                displayError = true; // Error message 
+                                displayError = true; 
                             }
                         }
                     }
@@ -123,7 +121,7 @@ namespace AngryBirds
             sb.Begin();
             sb.Draw(currBackGround, new Rectangle(0, 0, (int)Shared.stage.X, (int)Shared.stage.Y), Color.White);
 
-            // Draw transparent background for text
+
             Rectangle backgroundRectangle = new Rectangle(80, 90, 400, 100); // Adjust the size to fit the text
             Color backgroundColor = new Color(173, 216, 230, 0.5f); // Light blue color with 50% opacity
             sb.Draw(tmpTex, backgroundRectangle, backgroundColor);
@@ -153,10 +151,10 @@ namespace AngryBirds
                 {
                     Rectangle errorBackgroundRectangle = new Rectangle(80, 220, 730, 50); 
                     Color errorBackgroundColor = new Color(173, 216, 230, 0.5f);
-                    sb.Draw(tmpTex, errorBackgroundRectangle, errorBackgroundColor); // Draw the semi-transparent background
+                    sb.Draw(tmpTex, errorBackgroundRectangle, errorBackgroundColor); 
 
                     Vector2 errorPosition = new Vector2(100, 225); 
-                    sb.DrawString(gameFont, Error, errorPosition, Color.Red); // Draw the error text on top
+                    sb.DrawString(gameFont, Error, errorPosition, Color.Red); 
                 }
             }
             sb.End();
@@ -167,14 +165,14 @@ namespace AngryBirds
         {
             Game1 game = (Game1)Game;
             game.hideAllScenes();
-            game.ShowMenuScene(); // Make sure this method exists in your Game1 class
+            game.ShowMenuScene(); 
         }
 
         private void NextLevelButton_Click(object sender, EventArgs e)
         {
             Game1 game = (Game1)Game;
             game.hideAllScenes();
-            game.ShowLevelTwoScene(); // Make sure this method exists in your Game1 class
+            game.ShowLevelTwoScene(); 
         }
 
         private void ExitButton_Click(object sender, EventArgs e)

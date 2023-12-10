@@ -1,7 +1,7 @@
 ﻿using AngryBirds;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework;
 
 internal class BirdComponent : DrawableGameComponent
 {
@@ -17,6 +17,7 @@ internal class BirdComponent : DrawableGameComponent
     private ProgressBarComponent progressBar;
     private SpriteFont font;
     private bool mouseClickedAtZeroProgress;
+    private bool spriteChanged = false;
     public bool IsLaunched { get; private set; }
 
     public Vector2 Position
@@ -24,9 +25,7 @@ internal class BirdComponent : DrawableGameComponent
         get { return position; }
     }
 
-
     public float LaunchCount { get; private set; } = 0;
-
 
     private SlingShotComponent slingShot;
 
@@ -44,12 +43,10 @@ internal class BirdComponent : DrawableGameComponent
         get { return respawnCount; }
     }
 
-    //private int remainingAnimals;
-
-    //public int RemainingAnimals
-    //{
-    //    get { return remainingAnimals; }
-    //}
+    private const int NumFrames = 3; 
+    private int currentAnimationFrame = 0; 
+    private const float FrameSwitchInterval = 0.2f; 
+    private float frameSwitchTimer = 0.0f; 
 
     public BirdComponent(Game game, Vector2 initialPosition, Texture2D birdTexture, int width, int height, AimShotComponent aimShot, ProgressBarComponent progressBar, SpriteFont font, SlingShotComponent slingShot)
         : base(game)
@@ -65,19 +62,17 @@ internal class BirdComponent : DrawableGameComponent
         this.progressBar = progressBar;
         this.font = font;
         this.mouseClickedAtZeroProgress = false;
-        this.slingShot = slingShot; 
+        this.slingShot = slingShot;
         this.respawnCount = 0;
     }
 
-
     public void Launch(float power, Vector2 direction)
     {
-        if (!IsLaunched)
+        if (!IsLaunched && respawnCount < MaxRespawnLimit)
         {
-            // the birdAimShot should be passed
-            velocity = direction * power * 10; // Apply power and direction to velocity
+            velocity = direction * power * 10;
             IsLaunched = true;
-            LaunchCount++; // Increment launch count each time the bird is launched
+            LaunchCount++;
         }
     }
 
@@ -95,8 +90,10 @@ internal class BirdComponent : DrawableGameComponent
         IsLaunched = false;
         respawnCount++;
         progressBar.ResetProgress();
-    }
 
+        currentAnimationFrame = 0;
+        spriteChanged = false;
+    }
 
     public Rectangle GetBounds()
     {
@@ -107,12 +104,10 @@ internal class BirdComponent : DrawableGameComponent
             imageHeight);
     }
 
-
     public override void Update(GameTime gameTime)
     {
         MouseState mouseState = Mouse.GetState();
 
-        // Check for mouse click and if it's within the aimShot component
         if (mouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
         {
             Rectangle aimShotBounds = new Rectangle(
@@ -124,43 +119,68 @@ internal class BirdComponent : DrawableGameComponent
             if (aimShotBounds.Contains(mouseState.X, mouseState.Y) && !IsLaunched)
             {
                 float progress = progressBar.Progress;
+
                 if (progress > 0.0f)
                 {
-                    // Calculate the direction vector from the slingshot to the mouse click position.
                     Vector2 aimDirection = Vector2.Normalize(new Vector2(mouseState.X, mouseState.Y) - slingShot.Position);
-                    // Call the Launch method with the progress as power and the calculated direction.
                     Launch(progress, aimDirection);
-                    mouseClickedAtZeroProgress = false;
-                    aimShot.Visible = false; // Hide the aimShot as the bird has been launched.
+
+
+                    if (!spriteChanged)
+                    {
+                        currentAnimationFrame = 1; 
+                        spriteChanged = true;
+                    }
+
                 }
                 else
                 {
                     mouseClickedAtZeroProgress = true;
-                    aimShot.Visible = false; // Hide the aimShot as there's an attempt to launch without power.
                 }
             }
         }
 
-        // Apply velocity if the bird has been launched
+
+        if (IsLaunched && progressBar.Progress > 0.0f)
+        {
+            frameSwitchTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (frameSwitchTimer >= FrameSwitchInterval)
+            {
+                currentAnimationFrame++;
+                if (currentAnimationFrame >= NumFrames)
+                {
+                    currentAnimationFrame = 0;
+                }
+
+                frameSwitchTimer = 0.0f;
+            }
+        }
+        else
+        {
+            frameSwitchTimer = 0.0f;
+        }
+
         if (IsLaunched)
         {
             position += velocity;
         }
 
-        // Check if the bird is off screen and respawn if needed
         if (IsOutOfScreenBounds(position) && respawnCount < MaxRespawnLimit)
         {
             Respawn();
         }
         else if (IsOutOfScreenBounds(position) && respawnCount >= MaxRespawnLimit)
         {
-            // If the bird is off screen and the max respawn limit reached, stop the bird
             velocity = Vector2.Zero;
-            IsLaunched = false; // Allow the bird to be launched again
+            IsLaunched = false;
+
+
+            currentAnimationFrame = 0;
+            spriteChanged = false;
         }
 
         previousMouseState = mouseState;
-
 
         base.Update(gameTime);
     }
@@ -170,12 +190,29 @@ internal class BirdComponent : DrawableGameComponent
     {
         spriteBatch.Begin();
 
-        Rectangle sourceRectangle = new Rectangle(0, 0, 125, 125);
+        Rectangle sourceRectangle = new Rectangle(currentAnimationFrame * 115, 0, 125, 125);
         Vector2 drawPosition = new Vector2(position.X - imageWidth / 2, position.Y - imageHeight / 2);
 
         spriteBatch.Draw(birdTexture, new Rectangle((int)drawPosition.X, (int)drawPosition.Y, imageWidth, imageHeight), sourceRectangle, Color.White);
 
-        spriteBatch.DrawString(font, $"Total Allowed Bird Flys is 3!\nHere's Your Count: {respawnCount.ToString()}",new Vector2(7, 410), Color.AntiqueWhite);
+        Vector2 countTextPosition = new Vector2(7, 410);
+        string countText = $"Total Allowed Bird Flys is 3!\nHere's Your Count: {respawnCount.ToString()}";
+
+        Vector2 countTextSize = font.MeasureString(countText);
+
+        Texture2D whiteTexture = new Texture2D(GraphicsDevice, 1, 1);
+        whiteTexture.SetData(new Color[] { Color.White });
+
+        // Draw the background
+        Rectangle backgroundRect = new Rectangle(
+            (int)countTextPosition.X,
+            (int)countTextPosition.Y,
+            (int)countTextSize.X,
+            (int)countTextSize.Y);
+
+        spriteBatch.Draw(whiteTexture, backgroundRect, Color.White);
+
+        spriteBatch.DrawString(font, countText, countTextPosition, Color.Orange);
 
         if (progressBar.Progress == 0.0f && mouseClickedAtZeroProgress)
         {
@@ -190,5 +227,6 @@ internal class BirdComponent : DrawableGameComponent
 
         base.Draw(gameTime);
     }
+
 
 }

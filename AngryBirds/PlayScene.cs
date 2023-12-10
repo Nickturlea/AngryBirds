@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Linq;
-using System.Reflection.Metadata;
 
 internal class PlayScene : GameScene
 {
@@ -20,7 +19,6 @@ internal class PlayScene : GameScene
     private birdAimShot birdAimShot;
     private YellowBirdComponent yellowBird;
     private AimShotComponent aimShot;
-    private int counterOfAnimals;
     private SpriteFont gameFont;
     private Random random = new Random();
     private SpriteFont explanationFont;
@@ -28,7 +26,7 @@ internal class PlayScene : GameScene
         "shooting area to fire the bird\n at the boxes";
     private Texture2D tmpTex;
     public int score = 0;
-
+    private static int totalObjectCounter = 0; 
 
     private Vector2 GenerateRandomPosition(int width, int height)
     {
@@ -53,8 +51,9 @@ internal class PlayScene : GameScene
         {
             if (birdBounds.Intersects(box.GetBounds()))
             {
+                totalObjectCounter--;
                 Components.Remove(box);
-                score += 1;
+                score += 2;
             }
         }
 
@@ -63,9 +62,9 @@ internal class PlayScene : GameScene
         {
             if (birdBounds.Intersects(barrelItem.GetBounds()))
             {
+                totalObjectCounter--;
                 Components.Remove(barrelItem);
-                score += 1;
-
+                score += 3;
             }
         }
 
@@ -74,7 +73,7 @@ internal class PlayScene : GameScene
         {
             if (birdBounds.Intersects(pigItem.GetBounds()))
             {
-                counterOfAnimals--;
+                totalObjectCounter--;
                 Components.Remove(pigItem);
                 score += 5;
             }
@@ -85,14 +84,12 @@ internal class PlayScene : GameScene
         {
             if (birdBounds.Intersects(yellowBirdItem.GetBounds()))
             {
-                counterOfAnimals--;
+                totalObjectCounter--;
                 Components.Remove(yellowBirdItem);
-                score += 10;
+                score += 6;
             }
         }
     }
-
-
 
     public PlayScene(Game game) : base(game)
     {
@@ -115,8 +112,8 @@ internal class PlayScene : GameScene
 
         birdAimShot = new birdAimShot(game, birdAimShotTexture, 50, 50);
 
-        Vector2 aimShotPosition = new Vector2(200, 65);
-        aimShot = new AimShotComponent(game, aimShotPosition, aimshotTexture, 100, 300);
+        Vector2 aimShotPosition = new Vector2(160, 140);
+        aimShot = new AimShotComponent(game, aimShotPosition, aimshotTexture, 200, 160);
 
         Vector2 slingShotPosition = new Vector2(100, 220);
         slingShot = new SlingShotComponent(game, slingShotPosition, slingShotTexture, 100, 150);
@@ -124,46 +121,48 @@ internal class PlayScene : GameScene
         Vector2 boxSize = new Vector2(75, 75);
         Vector2 boxPosition1 = GenerateRandomPosition((int)boxSize.X, (int)boxSize.Y);
         brownBox = new BoxComponent(game, boxPosition1, boxTexture, (int)boxSize.X, (int)boxSize.Y);
+        totalObjectCounter++;
 
         Vector2 boxPosition2 = GenerateRandomPosition((int)boxSize.X, (int)boxSize.Y);
         BoxComponent box2 = new BoxComponent(game, boxPosition2, boxTexture, (int)boxSize.X, (int)boxSize.Y);
+        totalObjectCounter++;
 
         Vector2 boxPosition3 = GenerateRandomPosition((int)boxSize.X, (int)boxSize.Y);
         BoxComponent box3 = new BoxComponent(game, boxPosition3, boxTexture, (int)boxSize.X, (int)boxSize.Y);
+        totalObjectCounter++;
 
         Vector2 boxPosition4 = GenerateRandomPosition((int)boxSize.X, (int)boxSize.Y);
         BoxComponent box4 = new BoxComponent(game, boxPosition4, boxTexture, (int)boxSize.X, (int)boxSize.Y);
+        totalObjectCounter++;
 
         Vector2 barrelSize = new Vector2(50, 75);
         Vector2 barrelPosition = GenerateRandomPosition((int)barrelSize.X, (int)barrelSize.Y);
         barrel = new BarrelComponent(game, barrelPosition, barrelTexture, (int)barrelSize.X, (int)barrelSize.Y);
+        totalObjectCounter++;
 
         Vector2 barrelPosition2 = GenerateRandomPosition((int)barrelSize.X, (int)barrelSize.Y);
         BarrelComponent barrel2 = new BarrelComponent(game, barrelPosition2, barrelTexture, (int)barrelSize.X, (int)barrelSize.Y);
+        totalObjectCounter++;
 
         Vector2 barrelPosition3 = GenerateRandomPosition((int)barrelSize.X, (int)barrelSize.Y);
         BarrelComponent barrel3 = new BarrelComponent(game, barrelPosition3, barrelTexture, (int)barrelSize.X, (int)barrelSize.Y);
+        totalObjectCounter++;
 
         Vector2 pigSize = new Vector2(50, 50);
         Vector2 pigPosition = GenerateRandomPosition((int)pigSize.X, (int)pigSize.Y);
         pig = new PigComponent(game, pigPosition, pigTexture, (int)pigSize.X, (int)pigSize.Y);
-        counterOfAnimals++;
+        totalObjectCounter++;
 
         Vector2 yellowSize = new Vector2(75, 50);
         Vector2 yellowBPosition = GenerateRandomPosition((int)yellowSize.X, (int)yellowSize.Y);
         yellowBird = new YellowBirdComponent(game, yellowBPosition, yellowBirdTexture, (int)yellowSize.X, (int)yellowSize.Y);
-        counterOfAnimals++;
+        totalObjectCounter++;
 
-        Vector2 yellowBPosition2 = GenerateRandomPosition((int)yellowSize.X, (int)yellowSize.Y);
-        YellowBirdComponent yellowBird2 = new YellowBirdComponent(game, yellowBPosition2, yellowBirdTexture, (int)yellowSize.X, (int)yellowSize.Y);
-        counterOfAnimals++;
 
         Vector2 birdPosition = new Vector2(slingShot.Position.X + 67, slingShot.Position.Y - 5);
         Vector2 progressBarPosition = new Vector2(birdPosition.X - 150, birdPosition.Y - 110);
         progressBar = new ProgressBarComponent(game, progressBarPosition, 200, 20);
         bird = new BirdComponent(game, birdPosition, birdTexture, 105, 105, aimShot, progressBar, gameFont, slingShot);
-
-
 
         tmpTex = new Texture2D(GraphicsDevice, 1, 1);
         tmpTex.SetData(new[] { Color.White });
@@ -181,20 +180,7 @@ internal class PlayScene : GameScene
         Components.Add(box4);
         Components.Add(barrel2);
         Components.Add(barrel3);
-        Components.Add(yellowBird2);
         Components.Add(birdAimShot);
-    }
-
-
-
-
-    public void ResetGame()
-    {
-        // Clear existing components
-        //Components.Clear();
-
-        // Re-initialize all components
-       // InitializeComponents();
     }
 
 
@@ -207,7 +193,6 @@ internal class PlayScene : GameScene
         // Only allow setting aimShot position if the bird has not been launched yet
         if (!bird.IsLaunched && mouseState.LeftButton == ButtonState.Pressed && aimShot.GetBounds().Contains(mouseState.Position))
         {
-            
             Vector2 mousePosition = new Vector2(mouseState.X, mouseState.Y);
             Vector2 aimShotPosition = new Vector2(
                 mousePosition.X - birdAimShot.ImageWidth / 2,
@@ -215,36 +200,33 @@ internal class PlayScene : GameScene
             );
 
             birdAimShot.UpdatePosition(aimShotPosition);
-            birdAimShot.Visible = true; // Only show the aimShot when it's first set
+            birdAimShot.Visible = true; 
         }
         else if (bird.IsLaunched || bird.MouseClickedAtZeroProgress)
         {
             progressBar.ResetProgress();
-            birdAimShot.Visible = false; // Hide the aimShot after the bird is launched or if there's no power.
+            birdAimShot.Visible = false; 
         }
 
-        // Update bird component logic
-        bird.Update(gameTime); // This call will handle the bird's launching and respawning logic.
-        // Check if the bird shots left using teh respawn count and the counter animals in case they get rid of all the bird 
-        if (bird.RespawnCount >= BirdComponent.MaxRespawnLimit || counterOfAnimals == 0)
+        bird.Update(gameTime); 
+        if (bird.RespawnCount >= BirdComponent.MaxRespawnLimit ||  totalObjectCounter== 0)
         {
             // Transition to the EndScene
             Game1 game = (Game1)Game;
             game.hideAllScenes();
-            game.ShowEndScene(); // Make sure this method exists in your Game1 class
+            game.ShowEndScene(); 
+
         }
         base.Update(gameTime);
     }
 
     public override void Draw(GameTime gameTime)
     {
-        // Start putting images on the screen, with normal layer order and see-through parts
         sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
         sb.Draw(currBackGround, new Rectangle(0, 0, (int)Shared.stage.X, (int)Shared.stage.Y), Color.White);
-        sb.DrawString(gameFont, $"Remaining Animals: {counterOfAnimals.ToString()}", new Vector2(525, 40), Color.Green);
+        sb.DrawString(gameFont, $"Total objects left: {totalObjectCounter.ToString()}", new Vector2(500, 40), Color.DarkOrange);
 
-        // If the left mouse button is pressed, draw the bird aim shot at its current location.
         if (Mouse.GetState().LeftButton == ButtonState.Pressed)
         {
             birdAimShot.Draw(gameTime);
@@ -258,8 +240,6 @@ internal class PlayScene : GameScene
         bird.Draw(gameTime);
         aimShot.Draw(gameTime);
 
-
-        // Calculate the position and size for the explanation text background rectangle
         Vector2 explanationPosition = new Vector2(20, 600);
         Vector2 explanationSize = explanationFont.MeasureString(gameExplanation);
         Rectangle backgroundRect = new Rectangle(
@@ -267,22 +247,16 @@ internal class PlayScene : GameScene
             (int)explanationPosition.Y,
             (int)explanationSize.X,
             (int)explanationSize.Y);
-        sb.Draw(tmpTex, backgroundRect, Color.LightSkyBlue); // Draw a semi-transparent
+        sb.Draw(tmpTex, backgroundRect, Color.White);
 
+        sb.DrawString(explanationFont, gameExplanation, explanationPosition, Color.DarkOrange);
 
-        sb.DrawString(explanationFont, gameExplanation, explanationPosition, Color.GhostWhite); // Draw the game explanation text over the background rectangle
-
-        // Display the current score at the top of the screen
         string scoreText = "Score: " + score;
         Vector2 scorePosition = new Vector2(600, 10);
+        sb.DrawString(gameFont, scoreText, scorePosition, Color.DarkOrange);
 
-        sb.DrawString(gameFont, scoreText, scorePosition, Color.Gold);
-
-        // End the batch of draw calls and render everything to the screen
         sb.End();
 
-        // Call the base method to complete any additional drawing by the base class
         base.Draw(gameTime);
     }
 }
-
