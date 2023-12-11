@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace AngryBirds
 {
@@ -13,28 +12,67 @@ namespace AngryBirds
 
         public SaveScore()
         {
-            // Desktop for easy access 
-            filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "MadBird.txt");
+            // Desktop for easy access
+            filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "MadBirdScores.txt");
         }
 
         public void SavePlayerScore(int lvl, string playerName, int playerScore)
         {
-            // Check if the file exists
-            if (!File.Exists(filePath))
+            // Dictionary to store the name and score with the proper level 
+            Dictionary<int, List<(string Name, int Score)>> levelScores = new Dictionary<int, List<(string Name, int Score)>>();
+
+            // Checking if the file already exists 
+            if (File.Exists(filePath))
             {
-                // Create a new file and write the score
-                using (StreamWriter sw = File.CreateText(filePath))
+                // Read the file lines 
+                string[] lines = File.ReadAllLines(filePath);
+
+                // Regular expression to match the score entries
+                Regex linePattern = new Regex(@"From Level (?<lvl>\d+) \|.*? (?<name>.+?) - (?<score>\d+)$");
+                foreach (string line in lines)
                 {
-                    sw.WriteLine($"From lvl {lvl} |1. {playerName} - {playerScore}");
+                    Match match = linePattern.Match(line);
+                    if (match.Success)
+                    {
+                        int level = int.Parse(match.Groups["lvl"].Value);
+                        string name = match.Groups["name"].Value.Trim();
+                        int score = int.Parse(match.Groups["score"].Value);
+
+                        if (!levelScores.ContainsKey(level))
+                        {
+                            levelScores[level] = new List<(string Name, int Score)>();
+                        }
+                        levelScores[level].Add((name, score));
+                    }
                 }
             }
-            else
+
+            // Add the new score
+            if (!levelScores.ContainsKey(lvl))
             {
-                // Read existing scores and append the new score
-                List<string> lines = File.ReadAllLines(filePath).ToList();
-                int count = lines.Count + 1;
-                lines.Add($"{count}. {playerName} - {playerScore}");
-                File.WriteAllLines(filePath, lines);
+                levelScores[lvl] = new List<(string Name, int Score)>();
+            }
+            levelScores[lvl].Add((playerName, playerScore));
+
+            // Sort each level's scores in descending order
+            foreach (var levelScore in levelScores)
+            {
+                levelScores[levelScore.Key] = levelScore.Value.OrderByDescending(s => s.Score).ToList(); // A little of sql to make easyier to read from the file 
+            }
+
+            // Write the scores back to the file
+            using (StreamWriter sw = new StreamWriter(filePath, false))
+            {
+                foreach (var level in levelScores.Keys.OrderBy(k => k))
+                {
+                    sw.WriteLine($"----------Level {level}----------");
+                    int rank = 1;
+                    foreach (var scoreEntry in levelScores[level])
+                    {
+                        sw.WriteLine($"From Level {level} |{rank}. {scoreEntry.Name} - {scoreEntry.Score}");
+                        rank++;
+                    }
+                }
             }
         }
     }

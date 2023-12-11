@@ -2,11 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace AngryBirds
 {
@@ -25,20 +22,19 @@ namespace AngryBirds
         private StringBuilder inputText = new StringBuilder();
         private KeyboardState oldKeyboardState;
         private Button mainMenuButton;
-        private Button nextLevelButton;
         private Button exitButton;
         private Texture2D tmpTex;
         private Texture2D btnTex;
         private bool currState;
         private string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "MadBird.txt");
 
-        PlayScene PlayScene { get; set; }
+        LevelTwo LvlTwo { get; set; }
 
-        public EndSceneLevelTwo(Game game, PlayScene playScene) : base(game)
+        public EndSceneLevelTwo(Game game, LevelTwo levelTwoScene) : base(game)
         {
             Game1 g = (Game1)game;
             this.sb = g._spriteBatch;
-            this.PlayScene = playScene;
+            this.LvlTwo = levelTwoScene;
             gameFont = g.Content.Load<SpriteFont>("Fonts/MainFont");
             currBackGround = g.Content.Load<Texture2D>("Images/theEndLvlTwo");
 
@@ -105,7 +101,7 @@ namespace AngryBirds
                             {
                                 isNameEntered = true;
                                 playerName = inputText.ToString();
-                                saveScore.SavePlayerScore(lvl, playerName, PlayScene.currScore);
+                                saveScore.SavePlayerScore(lvl, playerName, LvlTwo.CurrScore);
                                 inputText.Clear();
                                 displayError = false;
                             }
@@ -138,7 +134,7 @@ namespace AngryBirds
 
             if (isNameEntered)
             {
-                string scoreMessage = $"From Level {lvl}: Player: {playerName} | Score: {PlayScene.currScore}";
+                string scoreMessage = $"From Level {lvl}: Player: {playerName} | Score: {LvlTwo.CurrScore}";
                 Vector2 scorePosition = new Vector2(100, 100);
                 sb.DrawString(gameFont, scoreMessage, scorePosition, Color.Black);
                 // Draw the buttons
@@ -175,7 +171,8 @@ namespace AngryBirds
             Game1 game = (Game1)Game;
             game.hideAllScenes();
             game.ShowMenuScene();
-            ResetEndScene();
+            //LvlTwo.ResetGame();
+           // ResetEndScene();
             currState = true;
         }
 

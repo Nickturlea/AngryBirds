@@ -30,8 +30,18 @@ namespace AngryBirds
         private Random random = new Random();
         private EvilBirdComponent evil;
         private Texture2D tmpTex;
-        public int score = 0;
+        private int score = 0;
         private static int totalObjectCounter = 0;
+
+
+        public int CurrScore { get; set; }
+
+
+        public void AddScore(int points)
+        {
+            score += points;
+            CurrScore = score; // Update the CurrScore property
+        }
 
 
         private Vector2 GenerateRandomPosition(int width, int height)
@@ -59,7 +69,7 @@ namespace AngryBirds
                 {
                     totalObjectCounter--;
                     Components.Remove(box);
-                    score += 1;
+                    AddScore(1);
                 }
             }
 
@@ -70,7 +80,7 @@ namespace AngryBirds
                 {
                     totalObjectCounter--;
                     Components.Remove(barrelItem);
-                    score += 1;
+                    AddScore(1);
                 }
             }
 
@@ -81,7 +91,7 @@ namespace AngryBirds
                 {
                     totalObjectCounter--;
                     Components.Remove(pigItem);
-                    score += 3;
+                    AddScore(3);
                 }
             }
 
@@ -92,7 +102,7 @@ namespace AngryBirds
                 {
                     totalObjectCounter--;
                     Components.Remove(yellowBirdItem);
-                    score += 4;
+                    AddScore(4);
                 }
             }
             // Check collisions with yellow birds
@@ -102,12 +112,128 @@ namespace AngryBirds
                 {
                     totalObjectCounter--;
                     Components.Remove(evilBird);
-                    score += 8;
+                    AddScore(4);
                 }
             }
 
 
         }
+
+
+        private void InitializeComponents()
+        { 
+            //'Game' is a property of the base class that points to the current Game instance.
+            Game1 g = (Game1)this.Game; // Use 'this.Game' to access the Game instance.
+            this.sb = g._spriteBatch;
+
+
+            gameFont = g.Content.Load<SpriteFont>("Fonts/MainFont");
+
+            currBackGround = g.Content.Load<Texture2D>("Images/levelTwoBackground");
+            Texture2D slingShotTexture = g.Content.Load<Texture2D>("Images/SlingShot");
+            Texture2D birdTexture = g.Content.Load<Texture2D>("Images/freshBirdSprite");
+            Texture2D boxTexture = g.Content.Load<Texture2D>("Images/brownBox");
+            Texture2D barrelTexture = g.Content.Load<Texture2D>("Images/barrel");
+            Texture2D pigTexture = g.Content.Load<Texture2D>("Images/pig");
+            Texture2D yellowBirdTexture = g.Content.Load<Texture2D>("Images/yellowBird");
+            Texture2D aimshotTexture = g.Content.Load<Texture2D>("Images/aimShot");
+            birdAimShotTexture = g.Content.Load<Texture2D>("Images/birdAimShot");
+            Texture2D evilBirdTexture = g.Content.Load<Texture2D>("Images/BirdSprite");
+            SoundEffect launchSound = g.Content.Load<SoundEffect>("Music/birdLaunch");
+
+
+            birdAimShot = new birdAimShot(this.Game, birdAimShotTexture, 50, 50);
+
+
+            Vector2 aimShotPosition = new Vector2(160, 140);
+            aimShot = new AimShotComponent(this.Game, aimShotPosition, aimshotTexture, 200, 160);
+
+            Vector2 slingShotPosition = new Vector2(100, 220);
+            slingShot = new SlingShotComponent(this.Game, slingShotPosition, slingShotTexture, 100, 150);
+
+            Vector2 boxSize = new Vector2(75, 75);
+            Vector2 boxPosition1 = GenerateRandomPosition((int)boxSize.X, (int)boxSize.Y);
+            brownBox = new BoxComponent(this.Game, boxPosition1, boxTexture, (int)boxSize.X, (int)boxSize.Y);
+            totalObjectCounter++;
+
+            Vector2 boxPosition2 = GenerateRandomPosition((int)boxSize.X, (int)boxSize.Y);
+            BoxComponent box2 = new BoxComponent(this.Game, boxPosition2, boxTexture, (int)boxSize.X, (int)boxSize.Y);
+            totalObjectCounter++;
+
+            Vector2 boxPosition3 = GenerateRandomPosition((int)boxSize.X, (int)boxSize.Y);
+            BoxComponent box3 = new BoxComponent(this.Game, boxPosition3, boxTexture, (int)boxSize.X, (int)boxSize.Y);
+            totalObjectCounter++;
+
+            Vector2 boxPosition4 = GenerateRandomPosition((int)boxSize.X, (int)boxSize.Y);
+            BoxComponent box4 = new BoxComponent(this.Game, boxPosition4, boxTexture, (int)boxSize.X, (int)boxSize.Y);
+            totalObjectCounter++;
+
+            Vector2 barrelSize = new Vector2(50, 75);
+            Vector2 barrelPosition = GenerateRandomPosition((int)barrelSize.X, (int)barrelSize.Y);
+            barrel = new BarrelComponent(this.Game, barrelPosition, barrelTexture, (int)barrelSize.X, (int)barrelSize.Y);
+            totalObjectCounter++;
+
+            Vector2 barrelPosition2 = GenerateRandomPosition((int)barrelSize.X, (int)barrelSize.Y);
+            BarrelComponent barrel2 = new BarrelComponent(this.Game, barrelPosition2, barrelTexture, (int)barrelSize.X, (int)barrelSize.Y);
+            totalObjectCounter++;
+
+            Vector2 barrelPosition3 = GenerateRandomPosition((int)barrelSize.X, (int)barrelSize.Y);
+            BarrelComponent barrel3 = new BarrelComponent(this.Game, barrelPosition3, barrelTexture, (int)barrelSize.X, (int)barrelSize.Y);
+            totalObjectCounter++;
+
+            Vector2 pigSize = new Vector2(50, 50);
+            Vector2 pigPosition = GenerateRandomPosition((int)pigSize.X, (int)pigSize.Y);
+            pig = new PigComponent(this.Game, pigPosition, pigTexture, (int)pigSize.X, (int)pigSize.Y);
+            totalObjectCounter++;
+
+            Vector2 yellowSize = new Vector2(75, 50);
+            Vector2 yellowBPosition = GenerateRandomPosition((int)yellowSize.X, (int)yellowSize.Y);
+            yellowBird = new YellowBirdComponent(this.Game, yellowBPosition, yellowBirdTexture, (int)yellowSize.X, (int)yellowSize.Y);
+            totalObjectCounter++;
+
+            Vector2 birdPosition = new Vector2(slingShot.Position.X + 67, slingShot.Position.Y - 5);
+            Vector2 progressBarPosition = new Vector2(birdPosition.X - 150, birdPosition.Y - 110);
+            progressBar = new ProgressBarComponent(this.Game, progressBarPosition, 200, 20);
+
+            bird = new BirdComponent(this.Game, birdPosition, birdTexture, 75, 75, aimShot, progressBar, gameFont, slingShot, launchSound);
+
+            Vector2 evilBirdPosition = new Vector2(1200, 550);
+            evil = new EvilBirdComponent(this.Game, evilBirdPosition, evilBirdTexture, 50, 50);
+            totalObjectCounter++;
+
+
+            tmpTex = new Texture2D(GraphicsDevice, 1, 1);
+            tmpTex.SetData(new[] { Color.White });
+
+            Components.Add(progressBar);
+            Components.Add(yellowBird);
+            Components.Add(pig);
+            Components.Add(aimShot);
+            Components.Add(brownBox);
+            Components.Add(barrel);
+            Components.Add(slingShot);
+            Components.Add(bird);
+            Components.Add(box2);
+            Components.Add(box3);
+            Components.Add(box4);
+            Components.Add(barrel2);
+            Components.Add(barrel3);
+            Components.Add(birdAimShot);
+            Components.Add(evil);
+        }
+
+
+        public void ResetGame()
+        {
+            CurrScore = 0;
+            score = 0;
+            totalObjectCounter = 0;
+            // Clear existing components
+            Components.Clear();
+            // Re-initialize all components
+            InitializeComponents();
+        }
+
 
 
         public LevelTwo(Game game) : base(game)
@@ -242,6 +368,8 @@ namespace AngryBirds
                 // Transition to the EndScene
                 Game1 game = (Game1)Game;
                 game.hideAllScenes();
+                game.EndLevelTwo();
+                CurrScore = score; // Current score 
                 game.ShowEndSceneTwo();
             }
             base.Update(gameTime);

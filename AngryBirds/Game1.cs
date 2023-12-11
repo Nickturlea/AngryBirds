@@ -14,6 +14,7 @@ namespace AngryBirds
         EndSceneLevelTwo endSceneLvlTwo;
         LevelTwo levelTwo;
         private PlayScene playScene;
+        ScoreScene scoreScene;
         private ControlScene controlScene;
         private ContactScene contactScene;
 
@@ -48,14 +49,21 @@ namespace AngryBirds
             aboutScene = new AboutScene(this);
             this.Components.Add(aboutScene);
 
+
+            scoreScene = new ScoreScene(this);
+            this.Components.Add(scoreScene);
+
             playScene = new PlayScene(this);
             this.Components.Add(playScene);
+
+            levelTwo = new LevelTwo(this);
+            this.Components.Add(levelTwo);
 
             endSceneLvlOne = new EndSceneLevelOne(this, playScene); // Level one scene 
             this.Components.Add(endSceneLvlOne);
 
 
-            endSceneLvlTwo = new EndSceneLevelTwo(this, playScene); // Level 2 end scene 
+            endSceneLvlTwo = new EndSceneLevelTwo(this, levelTwo); // Level 2 end scene 
             this.Components.Add(endSceneLvlTwo); 
 
 
@@ -86,11 +94,6 @@ namespace AngryBirds
             endSceneLvlOne.ShowLvlOneEnd();
         }
 
-        public void ShowEndSceneTwo() // Lvl 2 end scene 
-        {
-            hideAllScenes();
-            endSceneLvlTwo.ShowLvlTwoEnd();
-        }
 
         public void ShowLevelTwoScene() 
         {
@@ -98,6 +101,21 @@ namespace AngryBirds
             levelTwo = new LevelTwo(this);
             this.Components.Add(levelTwo);
             levelTwo.show();
+        }
+
+        public void EndLevelTwo()
+        {
+            // When level2 Ends 
+            hideAllScenes();
+            endSceneLvlTwo = new EndSceneLevelTwo(this, levelTwo); 
+            this.Components.Add(endSceneLvlTwo);
+            ShowEndSceneTwo();
+        }
+
+        public void ShowEndSceneTwo() // Lvl 2 end scene 
+        {
+            hideAllScenes();
+            endSceneLvlTwo.ShowLvlTwoEnd();
         }
 
         public void ShowMenuScene()
@@ -135,7 +153,8 @@ namespace AngryBirds
                 }
                 else if (selectedIndex == 3 && ks.IsKeyDown(Keys.Enter)) // High Scores
                 {
-                    // 
+                    hideAllScenes();
+                    scoreScene.show();
                 }
                 else if (selectedIndex == 4 && ks.IsKeyDown(Keys.Enter)) // About 
                 {
@@ -172,6 +191,14 @@ namespace AngryBirds
                 }
             }
             if (contactScene.Enabled)
+            {
+                if (ks.IsKeyDown(Keys.Escape))
+                {
+                    hideAllScenes();
+                    startScene.show();
+                }
+            }
+            if (scoreScene.Enabled)
             {
                 if (ks.IsKeyDown(Keys.Escape))
                 {

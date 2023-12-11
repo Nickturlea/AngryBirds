@@ -187,6 +187,8 @@ namespace AngryBirds
             Game1 game = (Game1)Game;
             game.hideAllScenes();
             game.ShowLevelTwoScene();
+            ResetEndScene();
+            currState = true;
         }
 
         private void ExitButton_Click(object sender, EventArgs e)
