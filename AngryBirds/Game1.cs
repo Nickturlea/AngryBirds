@@ -169,7 +169,7 @@ namespace AngryBirds
                 {
                     MediaPlayer.Stop();
                     hideAllScenes();
-                    scoreScene.show();
+                    scoreScene.Show(); // to fully update score in the same instance state of game
                 }
                 else if (selectedIndex == 4 && ks.IsKeyDown(Keys.Enter)) // About 
                 {
@@ -220,7 +220,7 @@ namespace AngryBirds
                 if (ks.IsKeyDown(Keys.Escape))
                 {
                     hideAllScenes();
-                    startScene.show();
+                    startScene.show(); 
                 }
             }
 
