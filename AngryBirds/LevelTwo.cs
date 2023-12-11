@@ -32,6 +32,7 @@ namespace AngryBirds
         private Texture2D tmpTex;
         private int score = 0;
         private static int totalObjectCounter = 0;
+        private SoundEffect boomSound;
 
 
         public int CurrScore { get; set; }
@@ -69,6 +70,7 @@ namespace AngryBirds
                 {
                     totalObjectCounter--;
                     Components.Remove(box);
+                    boomSound.Play();
                     AddScore(1);
                 }
             }
@@ -80,6 +82,7 @@ namespace AngryBirds
                 {
                     totalObjectCounter--;
                     Components.Remove(barrelItem);
+                    boomSound.Play();
                     AddScore(1);
                 }
             }
@@ -91,6 +94,7 @@ namespace AngryBirds
                 {
                     totalObjectCounter--;
                     Components.Remove(pigItem);
+                    boomSound.Play();
                     AddScore(3);
                 }
             }
@@ -102,6 +106,7 @@ namespace AngryBirds
                 {
                     totalObjectCounter--;
                     Components.Remove(yellowBirdItem);
+                    boomSound.Play();
                     AddScore(4);
                 }
             }
@@ -112,6 +117,7 @@ namespace AngryBirds
                 {
                     totalObjectCounter--;
                     Components.Remove(evilBird);
+                    boomSound.Play();
                     AddScore(4);
                 }
             }
@@ -255,6 +261,7 @@ namespace AngryBirds
             birdAimShotTexture = g.Content.Load<Texture2D>("Images/birdAimShot");
             Texture2D evilBirdTexture = g.Content.Load<Texture2D>("Images/BirdSprite");
             SoundEffect launchSound = g.Content.Load<SoundEffect>("Music/birdLaunch");
+            boomSound = g.Content.Load<SoundEffect>("Music/Explosion");
 
 
             birdAimShot = new birdAimShot(game, birdAimShotTexture, 50, 50);

@@ -19,36 +19,49 @@ namespace AngryBirds
             backgroudAboutTexture = g.Content.Load<Texture2D>("Images/AboutSceneBackground");
             mainFont = g.Content.Load<SpriteFont>("fonts/MainFont");
 
-            // The file name is 'AngryBirdsScores.txt' and is located on the Desktop / downloaded file is needed 
-            string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "AngryBirdsScores.txt");
+            // Direct path to the file in the Documents folder
+            string fileName = "MadBirdsScores.txt";
+            string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), fileName);
 
-            // Read the file content  
-            if (File.Exists(filePath))
+
+            try
             {
-                scoreLines = File.ReadAllLines(filePath);
+                // Read the file content
+                if (File.Exists(filePath))
+                {
+                    scoreLines = File.ReadAllLines(filePath);
+                }
+                else
+                {
+                    Console.WriteLine("File not found: " + filePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error reading the file: " + ex.Message);
             }
         }
 
         public override void Draw(GameTime gameTime)
         {
             sb.Begin();
-            // Making image full screen
             int screenWidth = GraphicsDevice.Viewport.Width;
             int screenHeight = GraphicsDevice.Viewport.Height;
             sb.Draw(backgroudAboutTexture, new Rectangle(0, 0, screenWidth, screenHeight), Color.Red);
 
-            // Starting position for the text
-            Vector2 textPosition = new Vector2(50,50);
+            Vector2 textPosition = new Vector2(50, 50);
 
-            // Need validation 
             if (scoreLines != null)
             {
                 foreach (string line in scoreLines)
                 {
                     sb.DrawString(mainFont, line, textPosition, Color.Red);
-                    // Move the text position down for the next line
                     textPosition.Y += mainFont.LineSpacing;
                 }
+            }
+            else
+            {
+                sb.DrawString(mainFont, "No scores found.", textPosition, Color.Red);
             }
 
             sb.End();

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 
 namespace AngryBirds
 {
@@ -17,6 +18,8 @@ namespace AngryBirds
         ScoreScene scoreScene;
         private ControlScene controlScene;
         private ContactScene contactScene;
+        private Song backgroundMusicMenu;
+        private Song backgroundMusicPlay;
 
         public Game1()
         {
@@ -72,6 +75,13 @@ namespace AngryBirds
 
             contactScene = new ContactScene(this);
             this.Components.Add(contactScene);
+
+            backgroundMusicMenu = Content.Load<Song>("Music/startMusic");
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.Play(backgroundMusicMenu);
+
+            backgroundMusicPlay = Content.Load<Song>("Music/playMusic");
+
 
 
         }
@@ -139,30 +149,37 @@ namespace AngryBirds
                     playScene.ResetGame(); // Reset and re-initialize the game state 
                     hideAllScenes();
                     playScene.show();
+                    MediaPlayer.Stop();
+                    MediaPlayer.Play(backgroundMusicPlay);
                 }
                 else if (selectedIndex == 1 && ks.IsKeyDown(Keys.Enter)) // Controls 
                 {
+                    MediaPlayer.Stop();
                     hideAllScenes();
                     controlScene.show();
                    
                 } 
                 else if (selectedIndex == 2 && ks.IsKeyDown(Keys.Enter)) // Contact Support / help
                 {
+                    MediaPlayer.Stop();
                     hideAllScenes();
                     contactScene.show();
                 }
                 else if (selectedIndex == 3 && ks.IsKeyDown(Keys.Enter)) // High Scores
                 {
+                    MediaPlayer.Stop();
                     hideAllScenes();
                     scoreScene.show();
                 }
                 else if (selectedIndex == 4 && ks.IsKeyDown(Keys.Enter)) // About 
                 {
+                    MediaPlayer.Stop();
                     hideAllScenes();
                     aboutScene.show();
                 }
                 else if (selectedIndex == 5 && ks.IsKeyDown(Keys.Enter)) // Quit 
                 {
+                    MediaPlayer.Stop();
                     Exit();
                 }
             }

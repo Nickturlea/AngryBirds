@@ -273,6 +273,18 @@
 /processorParam:Quality=Best
 /build:Music/birdLaunch.wav
 
+#begin Music/Explosion.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/Explosion.wav
+
+#begin Music/playMusic.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Music/playMusic.mp3
+
 #begin Music/startMusic.mp3
 /importer:Mp3Importer
 /processor:SongProcessor

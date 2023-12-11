@@ -29,7 +29,8 @@ internal class PlayScene : GameScene
     private Texture2D tmpTex;
     private int score = 0;
     public int currScore;
-    private static int totalObjectCounter = 0; 
+    private static int totalObjectCounter = 0;
+    private SoundEffect boomSound;
 
     private Vector2 GenerateRandomPosition(int width, int height)
     {
@@ -164,6 +165,7 @@ internal class PlayScene : GameScene
             {
                 totalObjectCounter--;
                 Components.Remove(box);
+                boomSound.Play();
                 score += 2;
             }
         }
@@ -175,6 +177,7 @@ internal class PlayScene : GameScene
             {
                 totalObjectCounter--;
                 Components.Remove(barrelItem);
+                boomSound.Play();
                 score += 3;
             }
         }
@@ -186,6 +189,7 @@ internal class PlayScene : GameScene
             {
                 totalObjectCounter--;
                 Components.Remove(pigItem);
+                boomSound.Play();
                 score += 5;
             }
         }
@@ -197,6 +201,7 @@ internal class PlayScene : GameScene
             {
                 totalObjectCounter--;
                 Components.Remove(yellowBirdItem);
+                boomSound.Play();
                 score += 6;
             }
         }
@@ -221,6 +226,7 @@ internal class PlayScene : GameScene
         birdAimShotTexture = g.Content.Load<Texture2D>("Images/birdAimShot");
         explanationFont = g.Content.Load<SpriteFont>("Fonts/MainFont");
         SoundEffect launchSound = g.Content.Load<SoundEffect>("Music/birdLaunch");
+        boomSound = g.Content.Load<SoundEffect>("Music/Explosion");
 
         birdAimShot = new birdAimShot(game, birdAimShotTexture, 50, 50);
 

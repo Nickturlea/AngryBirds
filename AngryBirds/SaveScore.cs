@@ -12,9 +12,11 @@ namespace AngryBirds
 
         public SaveScore()
         {
-            // Desktop for easy access
-            filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "MadBirdScores.txt");
+            // Documents folder for easy access
+            filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "MadBirdScores.txt");
         }
+
+
 
         public void SavePlayerScore(int lvl, string playerName, int playerScore)
         {
