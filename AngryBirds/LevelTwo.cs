@@ -242,7 +242,7 @@ namespace AngryBirds
                 // Transition to the EndScene
                 Game1 game = (Game1)Game;
                 game.hideAllScenes();
-                game.ShowEndScene();
+                game.ShowEndSceneTwo();
             }
             base.Update(gameTime);
         }

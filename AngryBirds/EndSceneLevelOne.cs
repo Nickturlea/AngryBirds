@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace AngryBirds
 {
-    internal class EndScene : GameScene
+    internal class EndSceneLevelOne : GameScene
     {
         private SpriteBatch sb;
         private SpriteFont gameFont;
@@ -19,7 +19,8 @@ namespace AngryBirds
         private bool isNameEntered = false;
         private bool displayError = false;
         private string Error = "Invalid, Please enter a name between 1-12 letters total!";
-        private SaveScore saveScore; 
+        private SaveScore saveScore;
+        private const int lvl = 1; 
         private const int maxNameLength = 12;
         private StringBuilder inputText = new StringBuilder();
         private KeyboardState oldKeyboardState;
@@ -28,17 +29,17 @@ namespace AngryBirds
         private Button exitButton;
         private Texture2D tmpTex;
         private Texture2D btnTex;
-        private string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "MadBird.txt");
+        private bool currState;
 
         PlayScene PlayScene { get; set; }
 
-        public EndScene(Game game, PlayScene playScene) : base(game)
+        public EndSceneLevelOne(Game game, PlayScene playScene) : base(game)
         {
             Game1 g = (Game1)game;
             this.sb = g._spriteBatch;
             this.PlayScene = playScene; 
             gameFont = g.Content.Load<SpriteFont>("Fonts/MainFont");
-            currBackGround = g.Content.Load<Texture2D>("Images/theENd");
+            currBackGround = g.Content.Load<Texture2D>("Images/theEndLvlOne");
 
             tmpTex = new Texture2D(GraphicsDevice, 1, 1);
             tmpTex.SetData(new[] { Color.LightSkyBlue });
@@ -55,7 +56,7 @@ namespace AngryBirds
             var btnX = (screenWidth - buttonWidth) / 2; 
 
 
-            this.mainMenuButton = new Button(btnTex, new Vector2(btnX, 200), gameFont, "Main Menu"); 
+            this.mainMenuButton = new Button(btnTex, new Vector2(btnX, 200), gameFont, "Main Menu");
             this.nextLevelButton = new Button(btnTex, new Vector2(btnX, 300), gameFont, "Next Level");
             this.exitButton = new Button(btnTex, new Vector2(btnX, 400), gameFont, "Exit");
 
@@ -68,6 +69,16 @@ namespace AngryBirds
             saveScore = new SaveScore(); 
 
         }
+
+        public void ResetEndScene()
+        {
+            isNameEntered = false;
+            currState = false;
+            displayError = false;
+            playerName = string.Empty;
+            inputText.Clear();
+        }
+
 
         public override void Update(GameTime gameTime)
         {
@@ -95,7 +106,7 @@ namespace AngryBirds
                             {
                                 isNameEntered = true;
                                 playerName = inputText.ToString();
-                                saveScore.SavePlayerScore(playerName, PlayScene.score);
+                                saveScore.SavePlayerScore(lvl, playerName, PlayScene.currScore);
                                 inputText.Clear();
                                 displayError = false; 
                             }
@@ -122,13 +133,14 @@ namespace AngryBirds
             sb.Draw(currBackGround, new Rectangle(0, 0, (int)Shared.stage.X, (int)Shared.stage.Y), Color.White);
 
 
-            Rectangle backgroundRectangle = new Rectangle(80, 90, 400, 100); // Adjust the size to fit the text
-            Color backgroundColor = new Color(173, 216, 230, 0.5f); // Light blue color with 50% opacity
+            Rectangle backgroundRectangle = new Rectangle(80, 90, 600
+                , 100); // size 
+            Color backgroundColor = new Color(173, 216, 230, 0.5f); // Light blue color with 50% trans
             sb.Draw(tmpTex, backgroundRectangle, backgroundColor);
 
             if (isNameEntered)
             {
-                string scoreMessage = $"Player: {playerName} | Score: {PlayScene.score}";
+                string scoreMessage = $"From Level {lvl}: Player: {playerName} | Score: {PlayScene.currScore}";
                 Vector2 scorePosition = new Vector2(100, 100);
                 sb.DrawString(gameFont, scoreMessage, scorePosition, Color.Black);
                 // Draw the buttons
@@ -165,14 +177,16 @@ namespace AngryBirds
         {
             Game1 game = (Game1)Game;
             game.hideAllScenes();
-            game.ShowMenuScene(); 
+            game.ShowMenuScene();
+            ResetEndScene(); 
+            currState = true;
         }
 
         private void NextLevelButton_Click(object sender, EventArgs e)
         {
             Game1 game = (Game1)Game;
             game.hideAllScenes();
-            game.ShowLevelTwoScene(); 
+            game.ShowLevelTwoScene();
         }
 
         private void ExitButton_Click(object sender, EventArgs e)
@@ -181,7 +195,7 @@ namespace AngryBirds
             game.Exit();
         }
 
-        public void Show()
+        public void ShowLvlOneEnd()
         {
             this.Visible = true;
             this.Enabled = true;

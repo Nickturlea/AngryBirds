@@ -17,7 +17,7 @@ namespace AngryBirds
             filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "MadBird.txt");
         }
 
-        public void SavePlayerScore(string playerName, int playerScore)
+        public void SavePlayerScore(int lvl, string playerName, int playerScore)
         {
             // Check if the file exists
             if (!File.Exists(filePath))
@@ -25,7 +25,7 @@ namespace AngryBirds
                 // Create a new file and write the score
                 using (StreamWriter sw = File.CreateText(filePath))
                 {
-                    sw.WriteLine($"1. {playerName} - {playerScore}");
+                    sw.WriteLine($"From lvl {lvl} |1. {playerName} - {playerScore}");
                 }
             }
             else

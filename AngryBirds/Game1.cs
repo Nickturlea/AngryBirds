@@ -10,7 +10,8 @@ namespace AngryBirds
         public SpriteBatch _spriteBatch;
         private StartScene startScene;
         private AboutScene aboutScene;
-        EndScene endScene;
+        EndSceneLevelOne endSceneLvlOne;
+        EndSceneLevelTwo endSceneLvlTwo;
         LevelTwo levelTwo;
         private PlayScene playScene;
         private ControlScene controlScene;
@@ -49,8 +50,14 @@ namespace AngryBirds
 
             playScene = new PlayScene(this);
             this.Components.Add(playScene);
-            endScene = new EndScene(this, playScene);
-            this.Components.Add(endScene);
+
+            endSceneLvlOne = new EndSceneLevelOne(this, playScene); // Level one scene 
+            this.Components.Add(endSceneLvlOne);
+
+
+            endSceneLvlTwo = new EndSceneLevelTwo(this, playScene); // Level 2 end scene 
+            this.Components.Add(endSceneLvlTwo); 
+
 
             controlScene = new ControlScene(this);
             this.Components.Add(controlScene);
@@ -73,10 +80,16 @@ namespace AngryBirds
             }
         }
 
-        public void ShowEndScene()
+        public void ShowEndSceneOne() // Lvl 1 end scene 
         {
             hideAllScenes();
-            endScene.Show();
+            endSceneLvlOne.ShowLvlOneEnd();
+        }
+
+        public void ShowEndSceneTwo() // Lvl 2 end scene 
+        {
+            hideAllScenes();
+            endSceneLvlTwo.ShowLvlTwoEnd();
         }
 
         public void ShowLevelTwoScene() 
@@ -105,6 +118,7 @@ namespace AngryBirds
                 selectedIndex = startScene.Menu.selectedIndex;
                 if (selectedIndex == 0 && ks.IsKeyDown(Keys.Enter))
                 {
+                    playScene.ResetGame(); // Reset and re-initialize the game state 
                     hideAllScenes();
                     playScene.show();
                 }
