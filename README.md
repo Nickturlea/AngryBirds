@@ -15,5 +15,5 @@ This mini-game is developed as a shooter-based response game. You are tasked wit
 This game is designed to test your hand-eye coordination and perception, while providing a relaxing and enjoyable gaming experience. Aim for the highest score and enjoy the challenge!
 
 
-![image](https://github.com/Nickturlea/AngryBirds/assets/89111937/bda191f1-4868-4b78-8803-46145a0288cc)
+![image](https://github.com/Nickturlea/AngryBirds/assets/89111937/d45b4c67-75bd-4707-922d-0c7d25030467)
 
